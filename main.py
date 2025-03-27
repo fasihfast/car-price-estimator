@@ -2,18 +2,10 @@ from scraper import get_data
 import pandas as pd
 import streamlit as st
 
-def update_data_and_model():
-    data = get_data(num_pages=10)
-    df = pd.DataFrame(data)
-    # todo: data cleaning
-    df.to_csv('data.csv')
-    # todo: train model
 
 
 if __name__ == '__main__':
-    # update_data_and_model()
-    st.markdown("<h1 style='font-size:60px'>🚗</h1>", unsafe_allow_html=True)
-    st.title('Car Price Estimator (Pakistan)')
+    st.title('🚘 Car Price Estimator (Pakistan)')
     st.write("Enter car details to get an accurate estimate of price.")
 
     make = st.text_input('Make', placeholder='e.g. Honda')
@@ -27,9 +19,13 @@ if __name__ == '__main__':
 
     col1, col2 = st.columns(2)
     with col1:
-        min_mileage = st.number_input('Minimum Mileage', min_value=0, max_value=1000000, value=0)
+        min_mileage = st.number_input('Minimum Mileage (km)', min_value=0, max_value=1000000, value=0)
     with col2:
-        max_mileage = st.number_input('Maximum Mileage', min_value=0, max_value=1000000, value=1000000)
+        max_mileage = st.number_input('Maximum Mileage (km)', min_value=0, max_value=1000000, value=1000000)
 
     if st.button('Estimate Price', use_container_width=True):
         st.title('PKR 200,000')
+
+    st.write('---')
+    st.write('Created by [mafgit](https://github.com/mafgit) & [fasihfast](https://github.com/fasihfast)')
+    st.write('Data Source: [PakWheels](https://www.pakwheels.com/)')

@@ -1,14 +1,14 @@
-# Car Price Estimator
+# 🚘 Car Price Estimator
 > Enter car information to get an accurate estimate of price.
 
-### Setup
+### 🚀 Setup
 - Create virtual environment using `python -m venv venv`
 - Activate virtual environment using `venv\Scripts\activate` (run in cmd, not bash)
 - Install packages using `pip install -r requirements.txt`
 
-### Tech Stack
+### 🛠️ Tech Stack
 - Python
-- Streamlit (UI)
-- BeautifulSoup4 (Scraping)
-- Scikit-Learn (Model Training)
+- Streamlit
+- BeautifulSoup4
+- Scikit-Learn
 - Pandas
