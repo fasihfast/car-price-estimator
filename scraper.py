@@ -32,10 +32,13 @@ def get_data_from_page(page):
         car_name = ad.find(class_='car-name').text
         make, model, _, trim, engine_type = extract_details_from_car_name(car_name)
 
+        city = ad.select_one('.search-vehicle-info li').text
+
         year = ad.select_one('.search-vehicle-info-2 li:nth-of-type(1)').text
         mileage = ad.select_one('.search-vehicle-info-2 li:nth-of-type(2)').text
         fuel_type = ad.select_one('.search-vehicle-info-2 li:nth-of-type(3)').text
         engine_capacity = ad.select_one('.search-vehicle-info-2 li:nth-of-type(4)').text
+        transmission = ad.select_one('.search-vehicle-info-2 li:nth-of-type(5)').text
 
         data.append({
             'make': make,
@@ -46,6 +49,8 @@ def get_data_from_page(page):
             'mileage': mileage,
             'fuel_type': fuel_type,
             'engine_capacity': engine_capacity,
+            'transmission': transmission,
+            'city': city
         })
     
     return data
