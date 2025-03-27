@@ -3,7 +3,7 @@
 
 ### Setup
 - Create virtual environment using `python -m venv venv`
-- Activate virtual environment
+- Activate virtual environment using `venv\Scripts\activate` (run in cmd, not bash)
 - Install packages using `pip install -r requirements.txt`
 
 ### Tech Stack
