@@ -22,36 +22,45 @@ def get_data_from_page(page):
     url = 'https://www.pakwheels.com/used-cars/search/-/'
     if page > 1:
         url += '?page=' + page
-
-    res = requests.get(url, headers=get_headers())
-    soup = BeautifulSoup(res.text, 'html.parser')
-    ads = soup.select(f'[id^="main_ad_"]')
-    data = []
     
-    for ad in ads:
-        car_name = ad.find(class_='car-name').text
-        make, model, _, trim, engine_type = extract_details_from_car_name(car_name)
+    data = []
 
-        city = ad.select_one('.search-vehicle-info li').text
+    try:
+        res = requests.get(url, headers=get_headers(), timeout=10)
+        res.raise_for_status()
+        soup = BeautifulSoup(res.text, 'html.parser')
+        ads = soup.select(f'[id^="main_ad_"]')
+    
+        for ad in ads:
+            car_name = ad.find(class_='car-name').text
+            make, model, _, trim, engine_type = extract_details_from_car_name(car_name)
 
-        year = ad.select_one('.search-vehicle-info-2 li:nth-of-type(1)').text
-        mileage = ad.select_one('.search-vehicle-info-2 li:nth-of-type(2)').text
-        fuel_type = ad.select_one('.search-vehicle-info-2 li:nth-of-type(3)').text
-        engine_capacity = ad.select_one('.search-vehicle-info-2 li:nth-of-type(4)').text
-        transmission = ad.select_one('.search-vehicle-info-2 li:nth-of-type(5)').text
+            city = ad.select_one('.search-vehicle-info li').text
 
-        data.append({
-            'make': make,
-            'model': model,
-            'year': year,
-            'trim': trim,
-            'engine_type': engine_type,
-            'mileage': mileage,
-            'fuel_type': fuel_type,
-            'engine_capacity': engine_capacity,
-            'transmission': transmission,
-            'city': city
-        })
+            year = ad.select_one('.search-vehicle-info-2 li:nth-of-type(1)').text
+            mileage = ad.select_one('.search-vehicle-info-2 li:nth-of-type(2)').text
+            fuel_type = ad.select_one('.search-vehicle-info-2 li:nth-of-type(3)').text
+            engine_capacity = ad.select_one('.search-vehicle-info-2 li:nth-of-type(4)').text
+            transmission = ad.select_one('.search-vehicle-info-2 li:nth-of-type(5)').text
+
+            data.append({
+                'make': make,
+                'model': model,
+                'year': year,
+                'trim': trim,
+                'engine_type': engine_type,
+                'mileage': mileage,
+                'fuel_type': fuel_type,
+                'engine_capacity': engine_capacity,
+                'transmission': transmission,
+                'city': city
+            })
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error requesting page {page}: {e}")
+    
+    except Exception as e:
+        print(f"Error processing page {page}: {e}")
     
     return data
 
