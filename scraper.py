@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import random
+import re
 
 
 
@@ -21,7 +22,7 @@ def get_data(num_pages=10):
 def get_data_from_page(page):
     url = 'https://www.pakwheels.com/used-cars/search/-/'
     if page > 1:
-        url += '?page=' + page
+        url += '?page=' + str(page)
     
     data = []
 
@@ -32,8 +33,8 @@ def get_data_from_page(page):
         ads = soup.select(f'[id^="main_ad_"]')
     
         for ad in ads:
-            car_name = ad.find(class_='car-name').text
-            make, model, _, trim, engine_type = extract_details_from_car_name(car_name)
+            car_name = ad.find(class_='car-name').text.strip()
+            make, model= extract_make_model(car_name)
 
             city = ad.select_one('.search-vehicle-info li').text
 
@@ -42,18 +43,21 @@ def get_data_from_page(page):
             fuel_type = ad.select_one('.search-vehicle-info-2 li:nth-of-type(3)').text
             engine_capacity = ad.select_one('.search-vehicle-info-2 li:nth-of-type(4)').text
             transmission = ad.select_one('.search-vehicle-info-2 li:nth-of-type(5)').text
+            price_raw=ad.find('div',class_='price-details').text.strip()
+            price=extract_price(price_raw)
 
             data.append({
                 'make': make,
                 'model': model,
                 'year': year,
-                'trim': trim,
-                'engine_type': engine_type,
+                # 'trim': trim,
+                # 'engine_type': engine_type,
                 'mileage': mileage,
                 'fuel_type': fuel_type,
                 'engine_capacity': engine_capacity,
                 'transmission': transmission,
-                'city': city
+                'city': city,
+                'price':price
             })
 
     except requests.exceptions.RequestException as e:
@@ -66,21 +70,36 @@ def get_data_from_page(page):
 
         
 
+def extract_make_model(car_name):
+    # print(car_name)
+    pattern =  '^(\w+)\s+([\w\s]+?)\s+(\d{4})(?:\s+(.*?))?(?:\s+(\d+\.\d+\s*[A-Za-z-]*))?\s*for Sale$'
+    match = re.search(pattern, car_name)
+    print(match)
+    if match:
+        # print(match.group(1))
+        return match.group(1),match.group(2)  # Extract company + model
+    return None,None
 
 
+def extract_price(price_text):
+    # Remove 'PKR' and extra spaces
+    price_text = price_text.replace('PKR', '').strip()
 
-def extract_details_from_car_name(car_name):
-    make = 'Suzuki'
-    model = 'Swift'
-    year = 2024
-    trim = 'DLX' # or variant
-    engine_type = 'i-DSI' # or engine size
+    # Extract the numeric part and unit (if any)
+    match = re.match(r'([\d\.]+)\s*(lacs|crore)?', price_text, re.IGNORECASE)
 
-    return make, model, year, trim, engine_type
+    if match:
+        amount = float(match.group(1))  # Extract number
+        unit = match.group(2)  # Extract unit (lacs or crore)
 
+        # Convert lacs/crore into numeric values
+        if unit:
+            if unit.lower() == 'lacs':
+                amount *= 100000  # 1 lac = 100,000
+            elif unit.lower() == 'crore':
+                amount *= 10000000  # 1 crore = 10,000,000
 
-
-
+        return int(amount)  # Convert to integer
 
 
 user_agents = [
