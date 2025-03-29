@@ -74,7 +74,7 @@ def extract_make_model(car_name):
     # print(car_name)
     pattern =  '^(\w+)\s+([\w\s]+?)\s+(\d{4})(?:\s+(.*?))?(?:\s+(\d+\.\d+\s*[A-Za-z-]*))?\s*for Sale$'
     match = re.search(pattern, car_name)
-    print(match)
+    # print(match)
     if match:
         # print(match.group(1))
         return match.group(1),match.group(2)  # Extract company + model
