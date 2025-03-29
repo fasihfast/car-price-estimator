@@ -34,7 +34,7 @@ def get_data_from_page(page):
     
         for ad in ads:
             car_name = ad.find(class_='car-name').text.strip()
-            make, year,model = extract_car_details(car_name)
+            make, model= extract_car_details(car_name)
 
             city = ad.select_one('.search-vehicle-info li').text
 
@@ -66,26 +66,26 @@ def get_data_from_page(page):
     
     return data
 
-def extract_car_details(title):
-    pattern = r'^(\w+)\s+(.*?)\s+(\d{4})\s+(.*?)\s+for Sale$'
-    match = re.match(pattern, title)
+def extract_car_details(car_name):
+   
+    match = re.search(r'\b(19\d{2}|20\d{2})\b', car_name)
     
-    pattern2 = r'^(\w+)\s+(.*)\s+(\d{4})$'
-    match2 = re.match(pattern2, title) 
-
     if match:
-        make = match.group(1)  # First word (Make)
-        year = match.group(3)  # 4-digit year
-        name = match.group(2) + ' ' + match.group(4) # Everything between make and year
-    elif match2:
-        make = match2.group(1)
-        name = match2.group(2)
-        year = match2.group(3)
+        year = match.group(1)  # Extract the year
+        parts = car_name.split(year, 1)  # Split at the year (only once)
+        before_year = parts[0].strip().split()  # Everything before the year (Make + Model)
+        after_year = parts[1].strip().split()  # Everything after the year
+        model_parts = before_year[1:]  # Remaining words as model
+        # before=list(before_year)
+        make = before_year[0] if before_year else None  # First word
         
-    else:
-        return None, None, None
-        
-    return make, year, name        
+        after_year = [word for word in after_year if word.lower() not in ["for", "sale"] and not re.match(r'^\d+(\.\d+)?/10$', word)]
+
+        # Concatenate before and after year parts into model
+        model = " ".join(model_parts + after_year) if model_parts or after_year else None  
+        print("Make",make,"Model: ",model)
+    
+    return make,model  
 
 
 def extract_price(price_text):
@@ -128,4 +128,3 @@ def get_headers():
     }
 
     return headers
-
