@@ -87,7 +87,7 @@ def extract_car_details(car_name):
 
         # Concatenate before and after year parts into model
         model = " ".join(model_parts + after_year) if model_parts or after_year else None  
-        print("Make",make,"Model: ",model)
+        # print("Make",make,"Model: ",model)
     
     return make,model  
 

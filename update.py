@@ -3,6 +3,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error
 from numpy import sqrt
@@ -62,20 +63,25 @@ if __name__ == '__main__':
         encoders[col] = le
     joblib.dump(encoders, 'data/encoders.joblib')
 
+    print(df.head())
+
     # splitting
     X = df.drop('price', axis=1)
     y = df['price']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     
     # scaling
-    scaler = StandardScaler()
-    numerical_cols = ["year", "mileage", "engine_capacity"]
-    X_train[numerical_cols] = scaler.fit_transform(X_train[numerical_cols])
-    X_test[numerical_cols] = scaler.transform(X_test[numerical_cols])
+    # scaler = StandardScaler()
+    # numerical_cols = ["year", "mileage", "engine_capacity"]
+    # X_train[numerical_cols] = scaler.fit_transform(X_train[numerical_cols])
+    # X_test[numerical_cols] = scaler.transform(X_test[numerical_cols])
+    # y_train[['price']] = scaler.fit_transform(y_train[['price']])
+    # y_test[['price']] = scaler.transform(y_test[['price']])
 
     # training
     print("Training model")
     model = RandomForestRegressor(n_estimators=100, random_state=42)
+    # model = LinearRegression()
     model.fit(X_train, y_train)
     joblib.dump(model, 'data/model.joblib')
 
