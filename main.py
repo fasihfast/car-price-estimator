@@ -6,7 +6,7 @@ from sklearn.preprocessing import StandardScaler
 
 
 if __name__ == '__main__':
-    model = joblib.load('model.joblib')
+    model = joblib.load('data/model.joblib')
     
     st.set_page_config(page_title='Car Price Estimator', page_icon='🚘')
     st.title('🚘 Car Price Estimator (Pakistan)')
@@ -16,7 +16,7 @@ if __name__ == '__main__':
     with col1:
         make = st.text_input('Make', value='Honda')
         trim = st.text_input('Trim/Variant', value='CX Eco') # todo: not passing in model
-        transmission = st.selectbox('Transmission', ['Automatic', 'Manual'])
+        transmission = st.selectbox('Transmission', ['Hybrid', 'Automatic', 'Manual'])
         min_mileage = st.number_input('Minimum Mileage (km)', min_value=0, max_value=1000000, value=50000)
         engine_capacity = st.number_input('Engine Capacity (cc)', min_value=0, max_value=100000, value=847)
     with col2:
@@ -57,12 +57,12 @@ if __name__ == '__main__':
         # scaling
         numerical_cols = ["year", "mileage", "engine_capacity"]
         scaler = StandardScaler()
-        df_original = pd.read_csv('data.csv')
+        df_original = pd.read_csv('data/data.csv')
         df[numerical_cols] = scaler.fit(df_original[numerical_cols]).transform(df[numerical_cols]) # important to fit on the original training data
 
         # encoding
         categorical_cols = ["model", "make", "transmission", "fuel_type", "city"]
-        encoders = joblib.load('encoders.joblib')
+        encoders = joblib.load('data/encoders.joblib')
         for col in categorical_cols:
             le = encoders[col]
             df[col] = le.transform(df[col])

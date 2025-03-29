@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import random
 import re
+import time
 
 
 
@@ -10,9 +11,12 @@ def get_data(num_pages=10):
     data = []
     for i in range(num_pages):
         page = i + 1
+        print(f"Getting data from page {page}")
         page_data = get_data_from_page(page)
         data += page_data
+        time.sleep(1)
 
+    print("Data collection completed")
     return data
 
 
@@ -33,8 +37,14 @@ def get_data_from_page(page):
         ads = soup.select(f'[id^="main_ad_"]')
     
         for ad in ads:
-            car_name = ad.find(class_='car-name').text.strip()
+            # car_name = ad.find(class_='car-name').text.strip()
+            # if not car_name:
+            car_name = ad.find(class_='car-name').find('h3').text.strip()
+                
             make, model= extract_make_model(car_name)
+
+            if not make or not model:
+                print(f"Car name: {car_name}\nMake: {make}\nModel: {model}")
 
             city = ad.select_one('.search-vehicle-info li').text
 
