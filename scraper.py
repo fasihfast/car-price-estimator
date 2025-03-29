@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import random
 import re
+import time
 
 
 
@@ -10,9 +11,12 @@ def get_data(num_pages=10):
     data = []
     for i in range(num_pages):
         page = i + 1
+        print(f"Getting data from page {page}")
         page_data = get_data_from_page(page)
         data += page_data
+        time.sleep(1)
 
+    print("Data collection completed")
     return data
 
 
