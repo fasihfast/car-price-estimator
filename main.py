@@ -60,6 +60,19 @@ if __name__ == '__main__':
         df_original = pd.read_csv('data.csv')
         df[numerical_cols] = scaler.fit(df_original[numerical_cols]).transform(df[numerical_cols]) # important to fit on the original training data
 
+
+        #price conversion
+
+        def price_convert(value):
+            if value >= 10000000:  # 1 crore = 10 million
+                short_value = round(value / 10000000, 1)  # Convert to crore
+                return f"{short_value}Cr"  # Append 'Cr' for Crore
+        
+            elif value >= 100000:  # Convert to lakh if less than crore
+            
+                short_value = round(value / 100000, 1)
+                return f"{short_value}Lac"  # Append 'L' for Lakh
+
         # encoding
         categorical_cols = ["model", "make", "transmission", "fuel_type", "city"]
         encoders = joblib.load('encoders.joblib')
@@ -71,7 +84,8 @@ if __name__ == '__main__':
 
         if prediction and len(prediction) > 0:
             price = int(prediction[0])
-            st.title(f'PKR {price}')
+            new_price=price_convert(price)
+            st.title(f'PKR {new_price}')
         else:
             st.title('An error occurred')
 
