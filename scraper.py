@@ -40,8 +40,7 @@ def get_data_from_page(page):
             # car_name = ad.find(class_='car-name').text.strip()
             # if not car_name:
             car_name = ad.find(class_='car-name').find('h3').text.strip()
-                
-            make, model= extract_make_model(car_name)
+            make, model= extract_car_details(car_name)
 
             if not make or not model:
                 print(f"Car name: {car_name}\nMake: {make}\nModel: {model}")
@@ -58,10 +57,8 @@ def get_data_from_page(page):
 
             data.append({
                 'make': make,
-                'model': model,
+                'model':model,
                 'year': year,
-                # 'trim': trim,
-                # 'engine_type': engine_type,
                 'mileage': mileage,
                 'fuel_type': fuel_type,
                 'engine_capacity': engine_capacity,
@@ -78,17 +75,26 @@ def get_data_from_page(page):
     
     return data
 
-        
+def extract_car_details(title):
+    pattern = r'^(\w+)\s+(.*?)\s+(\d{4})\s+(.*?)\s+for Sale$'
+    match = re.match(pattern, title)
+    
+    pattern2 = r'^(\w+)\s+(.*)\s+(\d{4})$'
+    match2 = re.match(pattern2, title) 
 
-def extract_make_model(car_name):
-    # print(car_name)
-    pattern =  '^(\w+)\s+([\w\s]+?)\s+(\d{4})(?:\s+(.*?))?(?:\s+(\d+\.\d+\s*[A-Za-z-]*))?\s*for Sale$'
-    match = re.search(pattern, car_name)
-    # print(match)
     if match:
-        # print(match.group(1))
-        return match.group(1),match.group(2)  # Extract company + model
-    return None,None
+        make = match.group(1)  # First word (Make)
+        year = match.group(3)  # 4-digit year
+        name = match.group(2) + ' ' + match.group(4) # Everything between make and year
+    elif match2:
+        make = match2.group(1)
+        name = match2.group(2)
+        year = match2.group(3)
+        
+    else:
+        return None, None, None
+        
+    return make, year, name        
 
 
 def extract_price(price_text):
