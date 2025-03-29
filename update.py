@@ -1,12 +1,12 @@
 from scraper import get_data
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error
-from numpy import sqrt
+from numpy import sqrt, log1p
 import joblib
 import sys
 import os
@@ -18,7 +18,7 @@ if __name__ == '__main__':
             if not os.path.exists('data'):
                 os.makedirs('data')
                 
-            data = get_data(num_pages=15)
+            data = get_data(num_pages=30)
             df = pd.DataFrame(data)
             
             # ------ DATA CLEANING ------
@@ -53,15 +53,24 @@ if __name__ == '__main__':
 
     df.dropna(inplace=True)
     print(f'Number of records after dropping nulls: {df.shape[0]}')
+
+    # df['price'] = df['price'] / 1000000 # in 10 lakhs or 1 million
+    df['price'] = log1p(df['price'])
     
     # encoding
     categorical_cols = ["model", "make", "transmission", "fuel_type", "city"]
-    encoders = {} # storing encoders to use later
-    for col in categorical_cols:
-        le = LabelEncoder()
-        df[col] = le.fit_transform(df[col].astype(str)) # important to cast to string to avoid errors.
-        encoders[col] = le
-    joblib.dump(encoders, 'data/encoders.joblib')
+    # encoders = {} # storing encoders to use later
+    # for col in categorical_cols:
+    #     le = LabelEncoder()
+    #     df[col] = le.fit_transform(df[col].astype(str)) # important to cast to string to avoid errors.
+    #     encoders[col] = le
+    # joblib.dump(encoders, 'data/label_encoders.joblib')
+
+    encoder = OneHotEncoder(sparse_output=False, handle_unknown='ignore')
+    encoded_features = encoder.fit_transform(df[categorical_cols])
+    encoded_df = pd.DataFrame(encoded_features, columns=encoder.get_feature_names_out(categorical_cols))
+    df = pd.concat([df, encoded_df], axis=1).drop(columns=categorical_cols)
+    joblib.dump(encoder, 'data/onehot_encoder.joblib')
 
     print(df.head())
 
@@ -71,10 +80,10 @@ if __name__ == '__main__':
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     
     # scaling
-    # scaler = StandardScaler()
-    # numerical_cols = ["year", "mileage", "engine_capacity"]
-    # X_train[numerical_cols] = scaler.fit_transform(X_train[numerical_cols])
-    # X_test[numerical_cols] = scaler.transform(X_test[numerical_cols])
+    scaler = StandardScaler()
+    numerical_cols = ["year", "mileage", "engine_capacity"]
+    X_train[numerical_cols] = scaler.fit_transform(X_train[numerical_cols])
+    X_test[numerical_cols] = scaler.transform(X_test[numerical_cols])
     # y_train[['price']] = scaler.fit_transform(y_train[['price']])
     # y_test[['price']] = scaler.transform(y_test[['price']])
 
