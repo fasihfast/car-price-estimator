@@ -5,10 +5,12 @@ import joblib
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 from numpy import expm1
+import datetime
 
 
 model = joblib.load('data/model.joblib')
 df_original = pd.read_csv('data/data.csv')  # original dataset
+current_year = datetime.datetime.now().year
 
 def price_convert(value):
     if value >= 10000000:
@@ -58,8 +60,8 @@ def submit_fn(make,model_field,year,mileage,fuel_type,engine_capacity,transmissi
         'engine_capacity': engine_capacity,
         'transmission': transmission,
         'city': city,
-        'age': 2025 - year,
-        'mileage_per_year': np.log1p(mileage / ((2025-year)+1)),
+        'age': current_year - year,
+        'mileage_per_year': np.log1p(mileage / ((current_year-year)+1)),
         'engine_per_mileage': np.log1p(engine_capacity / (mileage+1))
     }
 
@@ -114,11 +116,11 @@ def submit_fn(make,model_field,year,mileage,fuel_type,engine_capacity,transmissi
     df = df.reindex(columns=model.feature_names_in_, fill_value=0)
     # pd.set_option('display.max_columns', None)
     # pd.set_option('display.width', None)
-    print(df['make'].iloc[0])
-    print(df['model'].iloc[0])
-    print(df['year'].iloc[0])
-    print(df['mileage'].iloc[0])
-    print(df['city'].iloc[0])
+    # print(df['make'].iloc[0])
+    # print(df['model'].iloc[0])
+    # print(df['year'].iloc[0])
+    # print(df['mileage'].iloc[0])
+    # print(df['city'].iloc[0])
     prediction = model.predict(df)
 
     if prediction and len(prediction) > 0:
@@ -150,7 +152,7 @@ if __name__ == '__main__':
     
     st.set_page_config(page_title='Car Price Estimator', page_icon='🚘')
     st.title('🚘 Car Price Estimator (Pakistan)')
-    st.info("Enter car details to get an accurate estimate of price. You can skip fields.")
+    st.info("Enter car details to get an accurate estimate of price. It uses machine learning model trained on real time data from PakWheels.")
     
 
     with st.container(border=False):
@@ -161,12 +163,12 @@ if __name__ == '__main__':
 
             model_field = st.selectbox('Model', st.session_state.model_list, key='model') # created a dropdown for model 
             # trim = st.text_input('Trim/Variant', value='CX Eco') # todo: not passing in model
-            year = st.number_input('Year', min_value=1980, max_value=2025, placeholder='e.g. 2016', value=None) # todo: max min year
+            year = st.number_input('Year', min_value=1950, max_value=current_year, placeholder='e.g. 2016', value=None) # todo: max min year
             mileage = st.number_input('Mileage (km)', min_value=0, max_value=10000000, value=None, placeholder='e.g. 50000')
         with col2:
-            transmission = st.selectbox('Transmission', ['Any', 'Automatic', 'Manual', 'Hybrid'])
+            transmission = st.selectbox('Transmission', ['Automatic', 'Manual', 'Hybrid'])
             engine_capacity = st.number_input('Engine Capacity (cc)', min_value=0, max_value=100000, value=None, placeholder='e.g. 1500')
-            fuel_type = st.selectbox('Fuel Type', ['Any', 'Petrol', 'Diesel', 'Electric', 'CNG', 'Hybrid'])
+            fuel_type = st.selectbox('Fuel Type', ['Petrol', 'Diesel', 'Electric', 'CNG', 'Hybrid'])
             city = st.selectbox('City', city_list) # created a dropdown for city
             # engine_type = st.text_input('Engine Type/Size', placeholder='e.g. 1.3 VVTi')
 
@@ -178,9 +180,5 @@ if __name__ == '__main__':
 
     st.write('---')
     st.write('-> Created by [mafgit](https://github.com/mafgit) & [fasihfast](https://github.com/fasihfast)')
-    st.write('-> Made using machine learning')
-    st.write('-> Data source: [PakWheels](https://www.pakwheels.com/)')
-
-# todo: CI/CD
-# todo: feature engineering
-# todo: gradient booster
+    st.write('-> Real-time data is collected through scraping from: [PakWheels](https://www.pakwheels.com/)')
+    st.write('-> ML Model used: XGBoost Regressor. We also tried Random Forest Regressor & Linear Regressor.')

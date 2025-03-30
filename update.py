@@ -6,7 +6,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import StandardScaler, RobustScaler
 from sklearn.metrics import mean_squared_error
-from numpy import sqrt, log1p, expm1
+import numpy as np
 import joblib
 import sys
 import os
@@ -51,11 +51,15 @@ if __name__ == '__main__':
         raise ValueError('Provide "new" or "old" as argument')
 
 
+    print(f'Number of records before: {df.shape[0]}')
     df.dropna(inplace=True)
-    print(f'Number of records after dropping nulls: {df.shape[0]}')
+    df.drop_duplicates(inplace=True, keep='first')
+    df.reset_index(drop=True, inplace=True)
+    # df['price'] = df['price'].astype('float64')
+    print(f'Number of records after dropping nulls and duplicates: {df.shape[0]}')
 
     # df['price'] = df['price'] / 1000000 # in 10 lakhs or 1 million
-    # df['mileage'] = log1p(df['mileage'])
+    # df['mileage'] = np.log1p(df['mileage'])
 
     df['age'] = 2025 - df['year']  # Convert year to car age
     df['mileage_per_year'] = df['mileage'] / (df['age'] + 1)
@@ -64,13 +68,14 @@ if __name__ == '__main__':
     # df['age_mileage'] = df['age'] * df['mileage']
     # df['age_engine'] = df['age'] * df['engine_capacity']
 
-    df['price'] = log1p(df['price'])
-    df['mileage'] = log1p(df['mileage'])
-    df['mileage_per_year'] = log1p(df['mileage_per_year'])
-    df['engine_per_mileage'] = log1p(df['engine_per_mileage'])
-    # df['mileage_engine'] =  log1p(df['mileage_engine'])
-    # df['age_mileage'] = log1p(df['age_mileage'])
-    # df['age_engine'] =  log1p(df['age_engine'])
+    df['price'] = np.log1p(df['price'])
+    df['mileage'] = np.log1p(df['mileage'])
+    df['mileage_per_year'] = np.log1p(df['mileage_per_year'])
+    df['engine_per_mileage'] = np.log1p(df['engine_per_mileage'])
+    # df['mileage_engine'] =  np.log1p(df['mileage_engine'])
+    # df['age_mileage'] = np.log1p(df['age_mileage'])
+    # df['age_engine'] =  np.log1p(df['age_engine'])
+
 
     # target encoding
     from category_encoders import TargetEncoder
@@ -118,7 +123,7 @@ if __name__ == '__main__':
     print("Training model")
 
     from xgboost import XGBRegressor
-    model = XGBRegressor(n_estimators=300, max_depth=20, learning_rate=0.05)
+    model = XGBRegressor(n_estimators=300, learning_rate=0.05)
     # model = RandomForestRegressor(n_estimators=300, random_state=42)
     # model = LinearRegression()
     model.fit(X_train, y_train)
@@ -131,8 +136,8 @@ if __name__ == '__main__':
 
     # evaluating model
     y_pred = model.predict(X_test)
-    y_pred = expm1(y_pred)
-    y_test = expm1(y_test)
+    y_pred = np.expm1(y_pred)
+    y_test = np.expm1(y_test)
     # pd.set_option('display.max_columns', None)
     # pd.set_option('display.width', None)
     # print(X_test['make'].iloc[0])
@@ -142,7 +147,7 @@ if __name__ == '__main__':
     # print(X_test['city'].iloc[0])
     print(y_pred[:20])
     mse = mean_squared_error(y_test, y_pred)
-    rmse = sqrt(mse)
+    rmse = np.sqrt(mse)
     print(f"MSE: {mse}  RMSE: {rmse}")
 
     print("The script has finished successfully")

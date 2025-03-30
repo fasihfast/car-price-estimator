@@ -8,7 +8,9 @@
 
 ### 🛠️ Tech Stack
 - Python
-- Streamlit
-- BeautifulSoup4
-- Scikit-Learn
-- Pandas
+- Streamlit for UI
+- BeautifulSoup4 for scraping
+- Scikit-Learn for machine learning
+- Models tried: XGBoost Regressor, Random Forest Regressor and Linear Regressor
+- GitHub Actions for automation
+- Pandas for data analysis
