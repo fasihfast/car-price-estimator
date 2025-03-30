@@ -18,9 +18,15 @@ if __name__ == '__main__':
             if not os.path.exists('data'):
                 os.makedirs('data')
                 
-            data = get_data(num_pages=30)
-            df = pd.DataFrame(data)
-            
+            data = get_data(num_pages=5)
+            new_df = pd.DataFrame(data)
+
+            try:
+                df_old = pd.read_csv('data/data.csv')
+                df = pd.concat([new_df, df_old], ignore_index=True)
+            except FileNotFoundError:
+                df = new_df
+                
             # ------ DATA CLEANING ------
             print("Preprocessing data")
 
