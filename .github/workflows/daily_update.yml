@@ -43,6 +43,9 @@ jobs:
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
+        git checkout master
+        git pull --rebase origin master
+
         # Check for changes
         git add -A
         if git diff --staged --quiet; then
@@ -52,4 +55,4 @@ jobs:
 
         # Commit and push changes
         git commit -m "Automated update: $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
-        git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
+        git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:master
