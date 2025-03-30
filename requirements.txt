@@ -3,3 +3,5 @@ requests
 pandas
 streamlit
 scikit-learn
+xgboost
+category_encoders

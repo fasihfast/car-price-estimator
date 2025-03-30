@@ -7,7 +7,17 @@ from sklearn.preprocessing import StandardScaler
 from numpy import expm1
 
 
+model = joblib.load('data/model.joblib')
 df_original = pd.read_csv('data/data.csv')  # original dataset
+
+def price_convert(value):
+    if value >= 10000000:
+        short_value = round(value / 10000000, 1)
+        return f"{short_value} Crore" 
+
+    elif value >= 100000:
+        short_value = round(value / 100000, 1)
+        return f"{short_value} Lakh"
 
 def submit_fn(make,model_field,year,mileage,fuel_type,engine_capacity,transmission,city):
     # make,model,year,mileage,fuel_type,engine_capacity,transmission,city,price
@@ -43,73 +53,78 @@ def submit_fn(make,model_field,year,mileage,fuel_type,engine_capacity,transmissi
         'make': make,
         'model': model_field,
         'year': year,
-        'mileage': mileage,
+        'mileage': np.log1p(mileage),
         'fuel_type': fuel_type,
         'engine_capacity': engine_capacity,
         'transmission': transmission,
-        'city': city
+        'city': city,
+        'age': 2025 - year,
+        'mileage_per_year': np.log1p(mileage / ((2025-year)+1)),
+        'engine_per_mileage': np.log1p(engine_capacity / (mileage+1))
     }
 
     df = pd.DataFrame([input_data])
 
-    # cleaning 'mileage' column
-    df['mileage'] = df['mileage'].astype(str).str.replace(r'[a-zA-Z,\s]+', '', regex=True)
-    df['mileage'] = pd.to_numeric(df['mileage'], errors='coerce')
-    df['mileage'] = df['mileage'].astype(int) # ensuring correct data type
+    # # cleaning 'mileage' column
+    # df['mileage'] = df['mileage'].astype(str).str.replace(r'[a-zA-Z,\s]+', '', regex=True)
+    # df['mileage'] = pd.to_numeric(df['mileage'], errors='coerce')
+    # df['mileage'] = df['mileage'].astype(int) # ensuring correct data type
 
-    # cleaning 'engine_capacity' column
-    if engine_capacity:
-        df['engine_capacity'] = df['engine_capacity'].astype(str).str.replace(r'[a-zA-Z,\s]+', '', regex=True)
-        df['engine_capacity'] = pd.to_numeric(df['engine_capacity'], errors='coerce')
-        df['engine_capacity'] = df['engine_capacity'].astype(int) # ensuring correct data type
-
-    if year:
-        df['year'] = df['year'].astype(int)
-
-    # scaling
-    numerical_cols = ["year", "mileage", "engine_capacity"]
-    # if year:
-    #     numerical_cols.append("year")
+    # # cleaning 'engine_capacity' column
     # if engine_capacity:
-        # numerical_cols.append("engine_capacity")
-    scaler = StandardScaler()
-    # df_original = pd.read_csv('data/data.csv')
-    df[numerical_cols] = scaler.fit(df_original[numerical_cols]).transform(df[numerical_cols]) # important to fit on the original training data
+    #     df['engine_capacity'] = df['engine_capacity'].astype(str).str.replace(r'[a-zA-Z,\s]+', '', regex=True)
+    #     df['engine_capacity'] = pd.to_numeric(df['engine_capacity'], errors='coerce')
+    #     df['engine_capacity'] = df['engine_capacity'].astype(int) # ensuring correct data type
+
+    # if year:
+    #     df['year'] = df['year'].astype(int)
 
 
-    # price conversion
-    def price_convert(value):
-        if value >= 10000000:
-            short_value = round(value / 10000000, 1)
-            return f"{short_value} Crore" 
     
-        elif value >= 100000:
-            short_value = round(value / 100000, 1)
-            return f"{short_value} Lakh"
+    # target encoding
+    target_encoder = joblib.load('data/target_encoder.joblib')
+    target_cols = ['make', 'model', 'city']
+    df_encoded = target_encoder.transform(df[target_cols])
+    df[target_cols] = df_encoded
 
-    # encoding
-    categorical_cols = ["model", "make", "transmission", "fuel_type", "city"]
-    # if fuel_type != 'Any':
-    #     categorical_cols.append('fuel_type')
-    # if transmission != 'Any':
-    #     categorical_cols.append('transmission')
-    # if make:
-    #     categorical_cols.append('make')
-    # if model_field:
-    #     categorical_cols.append('model')
-    # if city:
-    #     categorical_cols.append('city')
-
+    # categorical_cols = ["model", "make", "transmission", "fuel_type", "city"]
+    # one hot encoding
+    categorical_cols = ["transmission", "fuel_type"]
     encoder = joblib.load('data/onehot_encoder.joblib')
     encoded_features = encoder.transform(df[categorical_cols])
     encoded_df = pd.DataFrame(encoded_features, columns=encoder.get_feature_names_out(categorical_cols))
     df = pd.concat([df, encoded_df], axis=1).drop(columns=categorical_cols)
 
+    # label encoding
+    # encoders = joblib.load('data/label_encoders.joblib')
+    # for col in categorical_cols:
+    #     le = encoders[col]
+    #     df[col] = le.transform(df[col].astype(str)) # important to cast to string to avoid errors.
+
+    # scaling
+    numerical_cols = ["year", "mileage", "engine_capacity", "age", "mileage_per_year", "engine_per_mileage"]
+    # if year:
+    #     numerical_cols.append("year")
+    # if engine_capacity:
+        # numerical_cols.append("engine_capacity")
+    # df_original = pd.read_csv('data/data.csv')
+    scaler = joblib.load('data/scaler.joblib')
+    df[numerical_cols] = scaler.transform(df[numerical_cols].copy())
+    
+    df = df.reindex(columns=model.feature_names_in_, fill_value=0)
+    # pd.set_option('display.max_columns', None)
+    # pd.set_option('display.width', None)
+    print(df['make'].iloc[0])
+    print(df['model'].iloc[0])
+    print(df['year'].iloc[0])
+    print(df['mileage'].iloc[0])
+    print(df['city'].iloc[0])
     prediction = model.predict(df)
 
     if prediction and len(prediction) > 0:
-        price = int(prediction[0])
+        price = float(prediction[0])
         price = expm1(price)
+        # print(price)
         new_price=price_convert(price)
         st.title(f'PKR {new_price}')
     else:
@@ -122,8 +137,6 @@ def update_model_fields():
         st.session_state.model_list = model_list
 
 if __name__ == '__main__':
-    model = joblib.load('data/model.joblib')
-
     make_list=df_original['make'].unique()
     make_list=np.sort(make_list)
     if 'make' not in st.session_state: # run once initially only
