@@ -33,6 +33,11 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt --cache-dir ~/.cache/pip || echo "No requirements.txt found"
 
+    - name: Clean up stash and reset changes
+      run: |
+        git reset --hard  # Removes any uncommitted changes from previous runs
+        git stash clear   # Clears any stashed files from failed runs
+
     - name: Run update script
       run: python update.py new
 
