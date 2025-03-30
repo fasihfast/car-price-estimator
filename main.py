@@ -9,7 +9,7 @@ from numpy import expm1
 
 df_original = pd.read_csv('data/data.csv')  # original dataset
 
-def submit_fn(make,model_field,year,min_mileage,max_mileage,fuel_type,engine_capacity,transmission,city):
+def submit_fn(make,model_field,year,mileage,fuel_type,engine_capacity,transmission,city):
     # make,model,year,mileage,fuel_type,engine_capacity,transmission,city,price
 
     if make:
@@ -18,10 +18,10 @@ def submit_fn(make,model_field,year,min_mileage,max_mileage,fuel_type,engine_cap
         model_field = model_field.strip()
     # if year:
     #     input_data['year'] = year
-    if not min_mileage:
-        min_mileage = 0
-    if not max_mileage:
-        max_mileage = 1000000
+    # if not min_mileage:
+    #     min_mileage = 0
+    # if not max_mileage:
+    #     max_mileage = 1000000
     # input_data['mileage'] = (min_mileage + max_mileage) / 2        
     # if fuel_type != 'Any':
     #     input_data['fuel_type'] = fuel_type
@@ -35,7 +35,7 @@ def submit_fn(make,model_field,year,min_mileage,max_mileage,fuel_type,engine_cap
         city = city.strip()
         # input_data['city'] = city
 
-    if not make or not model_field or not year or not max_mileage or not city or not fuel_type or not transmission or not engine_capacity:
+    if not make or not model_field or not year or not mileage or not city or not fuel_type or not transmission or not engine_capacity:
         st.error('Please fill in all the fields.')
         return
     
@@ -43,7 +43,7 @@ def submit_fn(make,model_field,year,min_mileage,max_mileage,fuel_type,engine_cap
         'make': make,
         'model': model_field,
         'year': year,
-        'mileage': (min_mileage + max_mileage) / 2,
+        'mileage': mileage,
         'fuel_type': fuel_type,
         'engine_capacity': engine_capacity,
         'transmission': transmission,
@@ -115,17 +115,23 @@ def submit_fn(make,model_field,year,min_mileage,max_mileage,fuel_type,engine_cap
     else:
         st.title('An error occurred')
 
+def update_model_fields():
+    if st.session_state.make:
+        condition = df_original['make'] == st.session_state.make
+        model_list = df_original[condition]['model'].unique()
+        st.session_state.model_list = model_list
 
 if __name__ == '__main__':
     model = joblib.load('data/model.joblib')
 
     make_list=df_original['make'].unique()
     make_list=np.sort(make_list)
+    if 'make' not in st.session_state: # run once initially only
+        st.session_state.make = make_list[0]
+        update_model_fields()    
 
     city_list=df_original['city'].unique()
     city_list=np.sort(city_list)
-
-    model_list=df_original['model'].unique()
 
 
     
@@ -133,43 +139,35 @@ if __name__ == '__main__':
     st.title('🚘 Car Price Estimator (Pakistan)')
     st.info("Enter car details to get an accurate estimate of price. You can skip fields.")
     
-    with st.form("car_details", border=False):
+
+    with st.container(border=False):
         st.header("Car Details")
         col1, col2 = st.columns(2)
         with col1:
-            make = st.selectbox('Make', make_list) # created a dropdown for make 
+            make = st.selectbox('Make', make_list, on_change=update_model_fields, key='make') # created a dropdown for make 
 
-            model_field = st.selectbox('Model', model_list) # created a dropdown for model 
+            model_field = st.selectbox('Model', st.session_state.model_list, key='model') # created a dropdown for model 
             # trim = st.text_input('Trim/Variant', value='CX Eco') # todo: not passing in model
-            transmission = st.selectbox('Transmission', ['Any', 'Automatic', 'Manual', 'Hybrid'])
-            min_mileage = st.number_input('Minimum Mileage (km)', min_value=0, max_value=1000000, value=0)
-            city = st.selectbox('City', city_list) # created a dropdown for city
-        with col2:
-            engine_capacity = st.number_input('Engine Capacity (cc)', min_value=0, max_value=100000, value=None, placeholder='e.g. 1500')
             year = st.number_input('Year', min_value=1980, max_value=2025, placeholder='e.g. 2016', value=None) # todo: max min year
+            mileage = st.number_input('Mileage (km)', min_value=0, max_value=10000000, value=None, placeholder='e.g. 50000')
+        with col2:
+            transmission = st.selectbox('Transmission', ['Any', 'Automatic', 'Manual', 'Hybrid'])
+            engine_capacity = st.number_input('Engine Capacity (cc)', min_value=0, max_value=100000, value=None, placeholder='e.g. 1500')
             fuel_type = st.selectbox('Fuel Type', ['Any', 'Petrol', 'Diesel', 'Electric', 'CNG', 'Hybrid'])
-            max_mileage = st.number_input('Maximum Mileage (km)', min_value=0, max_value=1000000, value=1000000)
+            city = st.selectbox('City', city_list) # created a dropdown for city
             # engine_type = st.text_input('Engine Type/Size', placeholder='e.g. 1.3 VVTi')
 
-        submit = st.form_submit_button("Estimate Price", use_container_width=True)
+        submit = st.button("Estimate Price", use_container_width=True)
 
     if submit: 
         with st.spinner('Estimating price...'):
-            submit_fn(make,model_field,year,min_mileage,max_mileage,fuel_type,engine_capacity,transmission,city)
+            submit_fn(make,model_field,year,mileage,fuel_type,engine_capacity,transmission,city)
 
     st.write('---')
     st.write('-> Created by [mafgit](https://github.com/mafgit) & [fasihfast](https://github.com/fasihfast)')
     st.write('-> Made using machine learning')
     st.write('-> Data source: [PakWheels](https://www.pakwheels.com/)')
 
-# todo: for both min and max mileage, calculate separate estimate and show average. Do the same for year
-# todo: or remove min and max because what if min is set to 0? it will show wrong estimate at 0
-# todo: if city not selected, show average for three most popular cities?
-# todo: if transmission or fuel type not selected, show average of estimates of all possibilities
-# todo: or just remove these extra features?
-# todo: but if we remove them, then only make model and year will remain, and we can just look up csv file to get estimates instead of using a model
-
-# todo: dropdowns for make model etc
 # todo: CI/CD
 # todo: feature engineering
 # todo: gradient booster
