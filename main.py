@@ -2,9 +2,12 @@ from scraper import get_data
 import pandas as pd
 import streamlit as st
 import joblib
+import numpy as np
 from sklearn.preprocessing import StandardScaler
 from numpy import expm1
 
+
+df_original = pd.read_csv('data/data.csv')  # original dataset
 
 def submit_fn(make,model_field,year,min_mileage,max_mileage,fuel_type,engine_capacity,transmission,city):
     # make,model,year,mileage,fuel_type,engine_capacity,transmission,city,price
@@ -70,7 +73,7 @@ def submit_fn(make,model_field,year,min_mileage,max_mileage,fuel_type,engine_cap
     # if engine_capacity:
         # numerical_cols.append("engine_capacity")
     scaler = StandardScaler()
-    df_original = pd.read_csv('data/data.csv')
+    # df_original = pd.read_csv('data/data.csv')
     df[numerical_cols] = scaler.fit(df_original[numerical_cols]).transform(df[numerical_cols]) # important to fit on the original training data
 
 
@@ -115,6 +118,16 @@ def submit_fn(make,model_field,year,min_mileage,max_mileage,fuel_type,engine_cap
 
 if __name__ == '__main__':
     model = joblib.load('data/model.joblib')
+
+    make_list=df_original['make'].unique()
+    make_list=np.sort(make_list)
+
+    city_list=df_original['city'].unique()
+    city_list=np.sort(city_list)
+
+    model_list=df_original['model'].unique()
+
+
     
     st.set_page_config(page_title='Car Price Estimator', page_icon='🚘')
     st.title('🚘 Car Price Estimator (Pakistan)')
@@ -124,12 +137,13 @@ if __name__ == '__main__':
         st.header("Car Details")
         col1, col2 = st.columns(2)
         with col1:
-            make = st.text_input('Make', placeholder='e.g. Honda')
-            model_field = st.text_input('Model', placeholder='e.g. Civic')
+            make = st.selectbox('Make', make_list) # created a dropdown for make 
+
+            model_field = st.selectbox('Model', model_list) # created a dropdown for model 
             # trim = st.text_input('Trim/Variant', value='CX Eco') # todo: not passing in model
             transmission = st.selectbox('Transmission', ['Any', 'Automatic', 'Manual', 'Hybrid'])
             min_mileage = st.number_input('Minimum Mileage (km)', min_value=0, max_value=1000000, value=0)
-            city = st.text_input('City', placeholder='e.g. Karachi')
+            city = st.selectbox('City', city_list) # created a dropdown for city
         with col2:
             engine_capacity = st.number_input('Engine Capacity (cc)', min_value=0, max_value=100000, value=None, placeholder='e.g. 1500')
             year = st.number_input('Year', min_value=1980, max_value=2025, placeholder='e.g. 2016', value=None) # todo: max min year
