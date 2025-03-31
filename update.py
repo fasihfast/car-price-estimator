@@ -58,6 +58,17 @@ if __name__ == '__main__':
 
 
     print(f'Number of records before: {df.shape[0]}')
+
+    # outlier removal
+    Q1 = df['price'].quantile(0.25)
+    Q3 = df['price'].quantile(0.75)
+    IQR = Q3 - Q1
+    lb = Q1 - 1.5 * IQR
+    ub = Q3 + 1.5 * IQR
+    condition = (df['price'] >= lb) & (df['price'] <= ub)
+    df = df[condition]
+    print(f'Number of records after dropping outliers: {df.shape[0]}')
+    
     df.dropna(inplace=True)
     df.drop_duplicates(inplace=True, keep='first')
     df.reset_index(drop=True, inplace=True)
@@ -151,7 +162,7 @@ if __name__ == '__main__':
     # print(X_test['year'].iloc[0])
     # print(X_test['mileage'].iloc[0])
     # print(X_test['city'].iloc[0])
-    print(y_pred[:20])
+    # print(y_pred[:20])
     mse = mean_squared_error(y_test, y_pred)
     rmse = np.sqrt(mse)
     print(f"MSE: {mse}  RMSE: {rmse}")
