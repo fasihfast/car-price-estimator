@@ -152,7 +152,10 @@ if __name__ == '__main__':
     
     st.set_page_config(page_title='Car Price Estimator', page_icon='🚘')
     st.title('🚘 Car Price Estimator (Pakistan)')
-    st.info("Enter car details to get an accurate estimate of price. It uses machine learning model trained on real time data from PakWheels.")
+    st.info(
+        """Enter car details to get an accurate estimate of price.
+        It uses machine learning model trained on real time data from PakWheels.
+        """)
     
 
     with st.container(border=False):
@@ -179,6 +182,48 @@ if __name__ == '__main__':
             submit_fn(make,model_field,year,mileage,fuel_type,engine_capacity,transmission,city)
 
     st.write('---')
-    st.write('-> Created by [mafgit](https://github.com/mafgit) & [fasihfast](https://github.com/fasihfast)')
-    st.write('-> Real-time data is collected through scraping from: [PakWheels](https://www.pakwheels.com/)')
-    st.write('-> ML Model used: XGBoost Regressor. We also tried Random Forest Regressor & Linear Regressor.')
+    st.header('Dataset Preview')
+    st.dataframe(df_original.head(8))
+    st.write("Number of records in dataset: ", df_original.shape[0])
+
+    import seaborn as sns
+    import matplotlib.pyplot as plt
+    import plotly.express as px
+
+
+    st.header('Distribution of Prices')
+    df_copy = df_original.copy()
+    df_copy['price'] = df_original['price'] / 100000
+    hist = px.histogram(df_copy, x='price', labels={'price': 'Price (in Lakhs)'}, nbins=30)
+    # Customize x-axis ticks
+    hist.update_layout(
+        xaxis=dict(
+            tickmode='linear',  # Use linear tick mode
+            tick0=0,             # Start tick at 0
+            dtick=10              # Show ticks every 5 units
+        )
+    )
+    st.plotly_chart(hist)
+
+    st.header('Correlation Heatmap')
+    heatmap, ax = plt.subplots()
+    sns.heatmap(df_original.select_dtypes(include=['float64', 'int64']).corr(), cmap='coolwarm', annot=True, ax=ax)
+    st.pyplot(heatmap)
+
+    st.header('Scatter Plot of Make Price vs Year/Mileage/Engine Capacity')
+    col1, col2 = st.columns(2)
+    with col1:
+        selected_make = st.selectbox('Select Make', make_list)
+    with col2:
+        against = st.selectbox('Select Against', ['year', 'mileage', 'engine_capacity'])
+    filtered_df = df_copy[df_copy['make'] == selected_make]
+    scatter_chart = px.scatter(filtered_df, x=against, y='price', labels={'price': 'Price (in Lakhs)'})
+    st.plotly_chart(scatter_chart)
+
+
+    st.write('---')
+    st.markdown('-> Created by [mafgit](https://github.com/mafgit) & [fasihfast](https://github.com/fasihfast)')
+    st.markdown('-> Real-time data is collected through scraping from: [PakWheels](https://www.pakwheels.com/)')
+    st.markdown('-> ML Model used: XGBoost Regressor. We also tried Random Forest Regressor & Linear Regressor.')
+
+    

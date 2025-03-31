@@ -5,3 +5,5 @@ streamlit
 scikit-learn
 xgboost
 category_encoders
+plotly
+seaborn
