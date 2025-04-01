@@ -10,6 +10,8 @@ import numpy as np
 import joblib
 import sys
 import os
+from datetime import datetime
+
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:
@@ -21,32 +23,32 @@ if __name__ == '__main__':
             data = get_data(num_pages=5)
             new_df = pd.DataFrame(data)
 
+            print("Preprocessing new data")
+
+            # cleaning mileage column
+            new_df['mileage'] = new_df['mileage'].astype(str).str.replace(r'[a-zA-Z,\s]+', '', regex=True)
+            new_df['mileage'] = pd.to_numeric(new_df['mileage'], errors='coerce')
+
+            # cleaning engine_capacity column
+            new_df['engine_capacity'] = new_df['engine_capacity'].astype(str).str.replace(r'[a-zA-Z,\s]+', '', regex=True)
+            new_df['engine_capacity'] = pd.to_numeric(new_df['engine_capacity'], errors='coerce')
+
+            # ensuring correct data types
+            new_df['year'] = new_df['year'].astype(int)
+            new_df['mileage'] = new_df['mileage'].astype(int)
+            new_df['engine_capacity'] = new_df['engine_capacity'].astype(int)
+
+            # filling empty prices
+            new_df['price'].fillna(new_df['price'].mean(), inplace=True)
+            
             try:
                 df_old = pd.read_csv('data/data.csv')
                 df = pd.concat([new_df, df_old], ignore_index=True)
             except FileNotFoundError:
                 df = new_df
                 
-            # ------ DATA CLEANING ------
-            print("Preprocessing data")
-
-            # cleaning 'mileage' column
-            df['mileage'] = df['mileage'].astype(str).str.replace(r'[a-zA-Z,\s]+', '', regex=True)
-            df['mileage'] = pd.to_numeric(df['mileage'], errors='coerce')
-
-            # cleaning 'engine_capacity' column
-            df['engine_capacity'] = df['engine_capacity'].astype(str).str.replace(r'[a-zA-Z,\s]+', '', regex=True)
-            df['engine_capacity'] = pd.to_numeric(df['engine_capacity'], errors='coerce')
-
-            # ensuring correct data types
-            df['year'] = df['year'].astype(int)
-            df['mileage'] = df['mileage'].astype(int)
-            df['engine_capacity'] = df['engine_capacity'].astype(int)
-
-            # filling empty prices
-            df['price'].fillna(df['price'].mean(), inplace=True)
-
             df.to_csv('data/data.csv', index=False)
+            print("Preprocessing full data")
         elif arg == 'old':
             print("Loading data")
             df = pd.read_csv('data/data.csv')
@@ -56,18 +58,19 @@ if __name__ == '__main__':
     else:
         raise ValueError('Provide "new" or "old" as argument')
 
+    curr_year = datetime.now().year
 
     print(f'Number of records before: {df.shape[0]}')
 
     # outlier removal
-    Q1 = df['price'].quantile(0.25)
-    Q3 = df['price'].quantile(0.75)
-    IQR = Q3 - Q1
-    lb = Q1 - 1.5 * IQR
-    ub = Q3 + 1.5 * IQR
-    condition = (df['price'] >= lb) & (df['price'] <= ub)
-    df = df[condition]
-    print(f'Number of records after dropping outliers: {df.shape[0]}')
+    # Q1 = df['price'].quantile(0.25)
+    # Q3 = df['price'].quantile(0.75)
+    # IQR = Q3 - Q1
+    # lb = Q1 - 1.5 * IQR
+    # ub = Q3 + 1.5 * IQR
+    # condition = (df['price'] >= lb) & (df['price'] <= ub)
+    # df = df[condition]
+    # print(f'Number of records after dropping outliers: {df.shape[0]}')
     
     df.dropna(inplace=True)
     df.drop_duplicates(inplace=True, keep='first')
@@ -78,7 +81,7 @@ if __name__ == '__main__':
     # df['price'] = df['price'] / 1000000 # in 10 lakhs or 1 million
     # df['mileage'] = np.log1p(df['mileage'])
 
-    df['age'] = 2025 - df['year']  # Convert year to car age
+    df['age'] = curr_year - df['year']  # Convert year to car age
     df['mileage_per_year'] = df['mileage'] / (df['age'] + 1)
     df['engine_per_mileage'] = df['engine_capacity'] / (df['mileage'] + 1)  # avoid division by zero
     # df['mileage_engine'] = df['mileage'] * df['engine_capacity']
@@ -96,7 +99,7 @@ if __name__ == '__main__':
 
     # target encoding
     from category_encoders import TargetEncoder
-    target_cols= ['make', 'model', 'city']
+    target_cols = ['make', 'model', 'city']
     encoder = TargetEncoder()
     df_encoded = encoder.fit_transform(df[target_cols], df['price'])
     df[target_cols] = df_encoded
@@ -124,7 +127,7 @@ if __name__ == '__main__':
     # splitting
     X = df.drop('price', axis=1)
     y = df['price']
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42)
     
     # scaling
     # scaler = StandardScaler()
