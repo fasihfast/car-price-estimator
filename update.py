@@ -139,16 +139,15 @@ if __name__ == '__main__':
     # y_train[['price']] = scaler.fit_transform(y_train[['price']])
     # y_test[['price']] = scaler.transform(y_test[['price']])
 
-    # training
+    # training model
     print("Training model")
-
     from xgboost import XGBRegressor
     model = XGBRegressor(n_estimators=300, learning_rate=0.05)
     # model = RandomForestRegressor(n_estimators=300, random_state=42)
     # model = LinearRegression()
     model.fit(X_train, y_train)
-    joblib.dump(model, 'data/model.joblib')
 
+    # feature importance
     importances = model.feature_importances_
     feature_names = X_train.columns
     feature_importance_df = pd.DataFrame({'Feature': feature_names, 'Importance': importances})
@@ -170,4 +169,10 @@ if __name__ == '__main__':
     rmse = np.sqrt(mse)
     print(f"MSE: {mse}  RMSE: {rmse}")
 
+    # production model
+    # dropping unimportant features may be helpful
+    model = XGBRegressor(n_estimators=300, learning_rate=0.05)
+    model.fit(X, y)
+    joblib.dump(model, 'data/model.joblib')
+    
     print("The script has finished successfully")
