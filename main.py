@@ -60,6 +60,26 @@ def submit_fn(make,model_field,year,mileage,fuel_type,engine_capacity,transmissi
         city = city.strip()
         # input_data['city'] = city
 
+    df_copy = df_original[(df_original['make'] == make) & (df_original['model'] == model_field)]
+    
+    if not mileage:
+        mileage = df_copy['mileage'].mean()
+    
+    if not city or city == 'Any':
+        city = df_copy['city'].mode()[0]
+
+    if not year:
+        year = df_copy['year'].mean()
+
+    if not engine_capacity:
+        engine_capacity = df_copy['engine_capacity'].mean()
+
+    if not transmission or transmission == 'Any':
+        transmission = df_copy['transmission'].mode()[0]
+
+    if not fuel_type or fuel_type == 'Any':
+        fuel_type = df_copy['fuel_type'].mode()[0]
+
     if not make or not model_field or not year or not mileage or not city or not fuel_type or not transmission or not engine_capacity:
         st.error('Please fill in all the fields.')
         return
@@ -77,6 +97,8 @@ def submit_fn(make,model_field,year,mileage,fuel_type,engine_capacity,transmissi
         'mileage_per_year': np.log1p(mileage / ((current_year-year)+1)),
         'engine_per_mileage': np.log1p(engine_capacity / (mileage+1))
     }
+
+    print(input_data)
 
     df = pd.DataFrame([input_data])
 
@@ -160,16 +182,12 @@ if __name__ == '__main__':
 
     city_list=df_original['city'].unique()
     city_list=np.sort(city_list)
+    city_list = list(city_list)
+    city_list = ['Any'] + city_list
 
-
-    
     st.set_page_config(page_title='Car Price Estimator', page_icon='🚘')
     st.title('🚘 Car Price Estimator (Pakistan)')
-    st.info(
-        """Enter car details to get an accurate estimate of price.
-        It uses machine learning model trained on data collected & updated daily from PakWheels.
-        """)
-    
+    st.info("🚀 Enter car details to get an accurate estimate of price. You can skip fields.")
 
     with st.container(border=False):
         st.header("Car Details")
@@ -182,9 +200,9 @@ if __name__ == '__main__':
             year = st.number_input('Year', min_value=1950, max_value=current_year, placeholder='e.g. 2016', value=None) # todo: max min year
             mileage = st.number_input('Mileage (km)', min_value=0, max_value=10000000, value=None, placeholder='e.g. 50000')
         with col2:
-            transmission = st.selectbox('Transmission', ['Automatic', 'Manual', 'Hybrid'])
+            transmission = st.selectbox('Transmission', ['Any', 'Automatic', 'Manual', 'Hybrid'])
             engine_capacity = st.number_input('Engine Capacity (cc)', min_value=0, max_value=100000, value=None, placeholder='e.g. 1500')
-            fuel_type = st.selectbox('Fuel Type', ['Petrol', 'Diesel', 'Electric', 'CNG', 'Hybrid'])
+            fuel_type = st.selectbox('Fuel Type', ['Any','Petrol', 'Diesel', 'Electric', 'CNG', 'Hybrid'])
             city = st.selectbox('City', city_list) # created a dropdown for city
             # engine_type = st.text_input('Engine Type/Size', placeholder='e.g. 1.3 VVTi')
 
@@ -195,6 +213,10 @@ if __name__ == '__main__':
             submit_fn(make,model_field,year,mileage,fuel_type,engine_capacity,transmission,city)
 
     st.write('---')
+    st.info('🌐 Data is collected & updated daily automatically through scraping from: [PakWheels](https://www.pakwheels.com/)')
+    st.info('✨ ML Model used: XGBoost Regressor. We also tried Random Forest Regressor & Linear Regressor.')
+    st.write('---')
+
     st.header('Dataset Preview')
     st.dataframe(df_original.head(8))
     st.write("Number of records the model is currently trained on: ", df_original.shape[0])
@@ -235,8 +257,5 @@ if __name__ == '__main__':
 
 
     st.write('---')
-    st.info('-> Created by [mafgit](https://github.com/mafgit) & [fasihfast](https://github.com/fasihfast)')
-    st.info('-> Data is collected & updated daily automatically through scraping from: [PakWheels](https://www.pakwheels.com/)')
-    st.info('-> ML Model used: XGBoost Regressor. We also tried Random Forest Regressor & Linear Regressor.')
-
+    st.info('ℹ️ Created by [mafgit](https://github.com/mafgit) & [fasihfast](https://github.com/fasihfast)')
     
