@@ -18,7 +18,6 @@ lb = Q1 - 1.5 * IQR
 ub = Q3 + 1.5 * IQR
 condition = (df_original['price'] >= lb) & (df_original['price'] <= ub)
 df_original = df_original[condition]
-print(f'Number of records after dropping outliers: {df_original.shape[0]}')
 
 df_original.dropna(inplace=True)
 df_original.drop_duplicates(inplace=True, keep='first')
@@ -198,7 +197,7 @@ if __name__ == '__main__':
     st.write('---')
     st.header('Dataset Preview')
     st.dataframe(df_original.head(8))
-    st.write("Number of records in dataset: ", df_original.shape[0])
+    st.write("Number of records the model is currently trained on: ", df_original.shape[0])
 
     import seaborn as sns
     import matplotlib.pyplot as plt
