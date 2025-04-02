@@ -10,6 +10,20 @@ import datetime
 
 model = joblib.load('data/model.joblib')
 df_original = pd.read_csv('data/data.csv')  # original dataset
+# outlier removal
+Q1 = df_original['price'].quantile(0.25)
+Q3 = df_original['price'].quantile(0.75)
+IQR = Q3 - Q1
+lb = Q1 - 1.5 * IQR
+ub = Q3 + 1.5 * IQR
+condition = (df_original['price'] >= lb) & (df_original['price'] <= ub)
+df_original = df_original[condition]
+print(f'Number of records after dropping outliers: {df_original.shape[0]}')
+
+df_original.dropna(inplace=True)
+df_original.drop_duplicates(inplace=True, keep='first')
+df_original.reset_index(drop=True, inplace=True)
+    
 current_year = datetime.datetime.now().year
 
 def price_convert(value):
@@ -99,7 +113,7 @@ def submit_fn(make,model_field,year,mileage,fuel_type,engine_capacity,transmissi
 
     # label encoding
     # encoders = joblib.load('data/label_encoders.joblib')
-    # for col in categorical_cols:
+    # for col in target_cols:
     #     le = encoders[col]
     #     df[col] = le.transform(df[col].astype(str)) # important to cast to string to avoid errors.
 
@@ -154,7 +168,7 @@ if __name__ == '__main__':
     st.title('🚘 Car Price Estimator (Pakistan)')
     st.info(
         """Enter car details to get an accurate estimate of price.
-        It uses machine learning model trained on real time data from PakWheels.
+        It uses machine learning model trained on data collected & updated daily from PakWheels.
         """)
     
 
@@ -194,13 +208,13 @@ if __name__ == '__main__':
     st.header('Distribution of Prices')
     df_copy = df_original.copy()
     df_copy['price'] = df_original['price'] / 100000
-    hist = px.histogram(df_copy, x='price', labels={'price': 'Price (in Lakhs)'}, nbins=30)
+    hist = px.histogram(df_copy, x='price', labels={'price': 'Price (in Lakhs)'}, nbins=25)
     # Customize x-axis ticks
     hist.update_layout(
         xaxis=dict(
             tickmode='linear',  # Use linear tick mode
             tick0=0,             # Start tick at 0
-            dtick=10              # Show ticks every 5 units
+            dtick=20              # Show ticks every
         )
     )
     st.plotly_chart(hist)
@@ -222,8 +236,8 @@ if __name__ == '__main__':
 
 
     st.write('---')
-    st.markdown('-> Created by [mafgit](https://github.com/mafgit) & [fasihfast](https://github.com/fasihfast)')
-    st.markdown('-> Real-time data is collected through scraping from: [PakWheels](https://www.pakwheels.com/)')
-    st.markdown('-> ML Model used: XGBoost Regressor. We also tried Random Forest Regressor & Linear Regressor.')
+    st.info('-> Created by [mafgit](https://github.com/mafgit) & [fasihfast](https://github.com/fasihfast)')
+    st.info('-> Data is collected & updated daily automatically through scraping from: [PakWheels](https://www.pakwheels.com/)')
+    st.info('-> ML Model used: XGBoost Regressor. We also tried Random Forest Regressor & Linear Regressor.')
 
     
