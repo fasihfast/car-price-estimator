@@ -10,19 +10,7 @@ import datetime
 
 model = joblib.load('data/model.joblib')
 df_original = pd.read_csv('data/data.csv')  # original dataset
-# outlier removal
-Q1 = df_original['price'].quantile(0.25)
-Q3 = df_original['price'].quantile(0.75)
-IQR = Q3 - Q1
-lb = Q1 - 1.5 * IQR
-ub = Q3 + 1.5 * IQR
-condition = (df_original['price'] >= lb) & (df_original['price'] <= ub)
-df_original = df_original[condition]
 
-df_original.dropna(inplace=True)
-df_original.drop_duplicates(inplace=True, keep='first')
-df_original.reset_index(drop=True, inplace=True)
-    
 current_year = datetime.datetime.now().year
 
 def price_convert(value):
@@ -85,6 +73,8 @@ def submit_fn(make,model_field,year,mileage,fuel_type,engine_capacity,transmissi
         return
     
     input_data = {
+        'ad_scraped_on_month': datetime.datetime.now().month,
+        'ad_scraped_on_year': datetime.datetime.now().year,
         'make': make,
         'model': model_field,
         'year': year,
@@ -139,7 +129,7 @@ def submit_fn(make,model_field,year,mileage,fuel_type,engine_capacity,transmissi
     #     df[col] = le.transform(df[col].astype(str)) # important to cast to string to avoid errors.
 
     # scaling
-    numerical_cols = ["year", "mileage", "engine_capacity", "age", "mileage_per_year", "engine_per_mileage"]
+    numerical_cols = ["year", 'ad_scraped_on_year', 'ad_scraped_on_month', "mileage", "engine_capacity", "age", "mileage_per_year", "engine_per_mileage"]
     # if year:
     #     numerical_cols.append("year")
     # if engine_capacity:
@@ -219,7 +209,7 @@ if __name__ == '__main__':
 
     st.header('Dataset Preview')
     st.dataframe(df_original.head(8))
-    st.write("Number of records the model is currently trained on: ", df_original.shape[0])
+    st.write("Number of records currently in dataset: ", df_original.shape[0])
 
     import seaborn as sns
     import matplotlib.pyplot as plt
@@ -235,15 +225,30 @@ if __name__ == '__main__':
         xaxis=dict(
             tickmode='linear',  # Use linear tick mode
             tick0=0,             # Start tick at 0
-            dtick=20              # Show ticks every
+            dtick=35              # Show ticks every
         )
     )
     st.plotly_chart(hist)
 
+
+    
+    df_original['ad_scraped_on'] = pd.to_datetime(df_original['ad_scraped_on'])
+    df_original['ad_scraped_on_year'] = df_original['ad_scraped_on'].dt.year
+    df_original['ad_scraped_on_month'] = df_original['ad_scraped_on'].dt.month
+    df_original['ad_scraped_on_month'] = df_original['ad_scraped_on_month'].astype(int)
+    df_original['ad_scraped_on_year'] = df_original['ad_scraped_on_year'].astype(int)
+
+    # target encoding
+    target_encoder = joblib.load('data/target_encoder.joblib')
+    target_cols = ['make', 'model', 'city']
+    df_encoded = target_encoder.transform(df_original[target_cols])
+    df_original[target_cols] = df_encoded
+
     st.header('Correlation Heatmap')
     heatmap, ax = plt.subplots()
-    sns.heatmap(df_original.select_dtypes(include=['float64', 'int64']).corr(), cmap='coolwarm', annot=True, ax=ax)
+    sns.heatmap(df_original.drop('ad_id', axis=1).select_dtypes(include=['float64', 'int64']).corr(), cmap='coolwarm', annot=True, ax=ax, fmt='.2f')
     st.pyplot(heatmap)
+
 
     st.header('Scatter Plot of Make Price vs Year/Mileage/Engine Capacity')
     col1, col2 = st.columns(2)

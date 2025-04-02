@@ -20,7 +20,7 @@ if __name__ == '__main__':
             if not os.path.exists('data'):
                 os.makedirs('data')
                 
-            data = get_data(num_pages=5)
+            data = get_data(num_pages=30)
             new_df = pd.DataFrame(data)
 
             print("Preprocessing new data")
@@ -46,8 +46,11 @@ if __name__ == '__main__':
                 df = pd.concat([new_df, df_old], ignore_index=True)
             except FileNotFoundError:
                 df = new_df
-                
+
+            df.drop_duplicates(subset=['ad_id'], inplace=True, keep='last') # keep=last to preserve original date of scraping
+            df.reset_index(drop=True, inplace=True)
             df.to_csv('data/data.csv', index=False)
+                
             print("Preprocessing full data")
         elif arg == 'old':
             print("Loading data")
@@ -61,6 +64,11 @@ if __name__ == '__main__':
     curr_year = datetime.now().year
 
     print(f'Number of records before: {df.shape[0]}')
+    
+    df.dropna(inplace=True)
+    df.drop_duplicates(inplace=True, keep='first')
+    # df['price'] = df['price'].astype('float64')
+    print(f'Number of records after dropping nulls and duplicates: {df.shape[0]}')
 
     # outlier removal
     Q1 = df['price'].quantile(0.25)
@@ -71,12 +79,9 @@ if __name__ == '__main__':
     condition = (df['price'] >= lb) & (df['price'] <= ub)
     df = df[condition]
     print(f'Number of records after dropping outliers: {df.shape[0]}')
-    
-    df.dropna(inplace=True)
-    df.drop_duplicates(inplace=True, keep='first')
+
     df.reset_index(drop=True, inplace=True)
-    # df['price'] = df['price'].astype('float64')
-    print(f'Number of records after dropping nulls and duplicates: {df.shape[0]}')
+
 
     # df['price'] = df['price'] / 1000000 # in 10 lakhs or 1 million
     # df['mileage'] = np.log1p(df['mileage'])
@@ -84,18 +89,15 @@ if __name__ == '__main__':
     df['age'] = curr_year - df['year']  # Convert year to car age
     df['mileage_per_year'] = df['mileage'] / (df['age'] + 1)
     df['engine_per_mileage'] = df['engine_capacity'] / (df['mileage'] + 1)  # avoid division by zero
-    # df['mileage_engine'] = df['mileage'] * df['engine_capacity']
-    # df['age_mileage'] = df['age'] * df['mileage']
-    # df['age_engine'] = df['age'] * df['engine_capacity']
 
     df['price'] = np.log1p(df['price'])
     df['mileage'] = np.log1p(df['mileage'])
     df['mileage_per_year'] = np.log1p(df['mileage_per_year'])
     df['engine_per_mileage'] = np.log1p(df['engine_per_mileage'])
-    # df['mileage_engine'] =  np.log1p(df['mileage_engine'])
-    # df['age_mileage'] = np.log1p(df['age_mileage'])
-    # df['age_engine'] =  np.log1p(df['age_engine'])
 
+    df['ad_scraped_on'] = pd.to_datetime(df['ad_scraped_on'])
+    df['ad_scraped_on_year'] = df['ad_scraped_on'].dt.year
+    df['ad_scraped_on_month'] = df['ad_scraped_on'].dt.month
 
     # target encoding
     from category_encoders import TargetEncoder
@@ -123,21 +125,18 @@ if __name__ == '__main__':
     # joblib.dump(encoders, 'data/label_encoders.joblib')
 
 
-
+    df.drop(['ad_id', 'ad_scraped_on'], axis=1, inplace=True)
     # splitting
     X = df.drop('price', axis=1)
     y = df['price']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42)
     
     # scaling
-    # scaler = StandardScaler()
-    scaler = RobustScaler()
-    numerical_cols = ["year", "mileage", "engine_capacity", "age", "mileage_per_year", "engine_per_mileage"]
+    scaler = StandardScaler()
+    # scaler = RobustScaler()
+    numerical_cols = ["year", 'ad_scraped_on_year', 'ad_scraped_on_month', "mileage", "engine_capacity", "age", "mileage_per_year", "engine_per_mileage"]
     X_train[numerical_cols] = scaler.fit_transform(X_train[numerical_cols].copy())
     X_test[numerical_cols] = scaler.transform(X_test[numerical_cols].copy())
-    joblib.dump(scaler, 'data/scaler.joblib')
-    # y_train[['price']] = scaler.fit_transform(y_train[['price']])
-    # y_test[['price']] = scaler.transform(y_test[['price']])
 
     # training model
     print("Training model")
@@ -172,6 +171,10 @@ if __name__ == '__main__':
     # production model
     # dropping unimportant features may be helpful
     model = XGBRegressor(n_estimators=300, learning_rate=0.05)
+
+    X[numerical_cols] = scaler.fit_transform(X[numerical_cols].copy())
+    joblib.dump(scaler, 'data/scaler.joblib')
+
     model.fit(X, y)
     joblib.dump(model, 'data/model.joblib')
     

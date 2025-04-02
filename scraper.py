@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import random
 import re
 import time
+from datetime import date
 
 
 
@@ -37,6 +38,7 @@ def get_data_from_page(page):
         ads = soup.select(f'[id^="main_ad_"]')
     
         for ad in ads:
+            ad_id = ad['id'][8:]
             car_name = ad.find(class_='car-name').text.strip()
             make, model= extract_car_details(car_name)
 
@@ -51,6 +53,8 @@ def get_data_from_page(page):
             price=extract_price(price_raw)
 
             data.append({
+                'ad_scraped_on': date.today(),
+                'ad_id': ad_id,
                 'make': make,
                 'model':model,
                 'year': year,
