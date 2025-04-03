@@ -7,9 +7,6 @@ from sklearn.preprocessing import StandardScaler
 from numpy import expm1
 import datetime
 
-st.cache_data.clear()
-st.cache_resource.clear()
-
 model = joblib.load('data/model.joblib')
 df_original = pd.read_csv('data/data.csv')  # original dataset
 
