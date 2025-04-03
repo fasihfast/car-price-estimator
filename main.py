@@ -157,18 +157,9 @@ def submit_fn(make,model_field,year,mileage,fuel_type,engine_capacity,transmissi
     else:
         st.title('An error occurred')
 
-def update_model_fields():
-    if st.session_state.make:
-        condition = df_original['make'] == st.session_state.make
-        model_list = df_original[condition]['model'].unique()
-        st.session_state.model_list = model_list
-
 if __name__ == '__main__':
     make_list=df_original['make'].unique()
-    make_list=np.sort(make_list)
-    if 'make' not in st.session_state: # run once initially only
-        st.session_state.make = make_list[0]
-        update_model_fields()    
+    make_list=np.sort(make_list)   
 
     city_list=df_original['city'].unique()
     city_list=np.sort(city_list)
@@ -183,9 +174,12 @@ if __name__ == '__main__':
         st.header("Car Details")
         col1, col2 = st.columns(2)
         with col1:
-            make = st.selectbox('Make', make_list, on_change=update_model_fields, key='make') # created a dropdown for make 
+            make = st.selectbox('Make', make_list, key='make') # created a dropdown for make 
 
-            model_field = st.selectbox('Model', st.session_state.model_list, key='model') # created a dropdown for model 
+            condition = df_original['make'] == make
+            model_list = df_original[condition]['model'].unique()
+            model_list=np.sort(model_list)
+            model_field = st.selectbox('Model', model_list, key='model') # created a dropdown for model 
             # trim = st.text_input('Trim/Variant', value='CX Eco') # todo: not passing in model
             year = st.number_input('Year', min_value=1950, max_value=current_year, placeholder='e.g. 2016', value=None) # todo: max min year
             mileage = st.number_input('Mileage (km)', min_value=0, max_value=10000000, value=None, placeholder='e.g. 50000')
