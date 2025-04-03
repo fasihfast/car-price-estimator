@@ -20,7 +20,7 @@ if __name__ == '__main__':
             if not os.path.exists('data'):
                 os.makedirs('data')
                 
-            data = get_data(num_pages=30)
+            data = get_data(num_pages=5)
             new_df = pd.DataFrame(data)
 
             print("Preprocessing new data")
@@ -47,6 +47,8 @@ if __name__ == '__main__':
             except FileNotFoundError:
                 df = new_df
 
+            df['ad_id'] = df['ad_id'].astype(str)
+            df.dropna(inplace=True)
             df.drop_duplicates(subset=['ad_id'], inplace=True, keep='last') # keep=last to preserve original date of scraping
             df.reset_index(drop=True, inplace=True)
             df.to_csv('data/data.csv', index=False)
@@ -66,9 +68,10 @@ if __name__ == '__main__':
     print(f'Number of records before: {df.shape[0]}')
     
     df.dropna(inplace=True)
-    df.drop_duplicates(inplace=True, keep='first')
-    # df['price'] = df['price'].astype('float64')
-    print(f'Number of records after dropping nulls and duplicates: {df.shape[0]}')
+    print(f'Number of records after dropping nulls: {df.shape[0]}')
+    # print(df[df.duplicated()])
+    df.drop_duplicates(subset=['make', 'model', 'city', 'year', 'mileage', 'engine_capacity', 'transmission', 'fuel_type', 'price'], inplace=True, keep='last')
+    print(f'Number of records after dropping duplicates: {df.shape[0]}')
 
     # outlier removal
     Q1 = df['price'].quantile(0.25)

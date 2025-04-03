@@ -88,7 +88,7 @@ def submit_fn(make,model_field,year,mileage,fuel_type,engine_capacity,transmissi
         'engine_per_mileage': np.log1p(engine_capacity / (mileage+1))
     }
 
-    print(input_data)
+    # print(input_data)
 
     df = pd.DataFrame([input_data])
 
