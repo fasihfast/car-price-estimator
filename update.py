@@ -74,12 +74,14 @@ if __name__ == '__main__':
     print(f'Number of records after dropping duplicates: {df.shape[0]}')
 
     # outlier removal
-    Q1 = df['price'].quantile(0.25)
-    Q3 = df['price'].quantile(0.75)
-    IQR = Q3 - Q1
-    lb = Q1 - 1.5 * IQR
-    ub = Q3 + 1.5 * IQR
-    condition = (df['price'] >= lb) & (df['price'] <= ub)
+    # Q1 = df['price'].quantile(0.25)
+    # Q3 = df['price'].quantile(0.75)
+    # IQR = Q3 - Q1
+    # lb = Q1 - 1.5 * IQR
+    # ub = Q3 + 1.5 * IQR
+    condition = (df['price'] >= 100000) & (df['price'] <= 35000000)
+
+    # condition = (df['price'] >= lb) & (df['price'] <= ub)
     df = df[condition]
     print(f'Number of records after dropping outliers: {df.shape[0]}')
 
