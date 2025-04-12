@@ -68,7 +68,7 @@ def submit_fn(make,model_field,year,mileage,fuel_type,engine_capacity,transmissi
         fuel_type = df_copy['fuel_type'].mode()[0]
 
     if not make or not model_field or not year or not mileage or not city or not fuel_type or not transmission or not engine_capacity:
-        st.error('Please fill in all the fields.')
+        st.error('Please fill in all the required fields.')
         return
     
     input_data = {
@@ -167,7 +167,7 @@ if __name__ == '__main__':
 
     st.set_page_config(page_title='Car Price Estimator', page_icon='🚘')
     st.title('🚘 Car Price Estimator (Pakistan)')
-    st.info("🚀 Enter car details to get an accurate estimate of price. You can skip fields.")
+    st.info("🚀 Enter car details to get an accurate estimate of price. You can also choose hypothetical values for cars such as 4000 cc engine for Suzuki FX, and you will get an estimate!")
 
     with st.container(border=False):
         st.header("Car Details")
@@ -180,13 +180,13 @@ if __name__ == '__main__':
             model_list=np.sort(model_list)
             model_field = st.selectbox('Model', model_list, key='model') # created a dropdown for model 
             # trim = st.text_input('Trim/Variant', value='CX Eco') # todo: not passing in model
-            year = st.number_input('Year', min_value=1950, max_value=current_year, placeholder='e.g. 2016', value=None) # todo: max min year
-            mileage = st.number_input('Mileage (km)', min_value=0, max_value=10000000, value=None, placeholder='e.g. 50000')
+            year = st.number_input('Year (Optional)', min_value=1950, max_value=current_year, placeholder='e.g. 2016', value=None) # todo: max min year
+            mileage = st.number_input('Mileage (km) (Optional)', min_value=0, max_value=10000000, value=None, placeholder='e.g. 50000')
         with col2:
-            transmission = st.selectbox('Transmission', ['Any', 'Automatic', 'Manual', 'Hybrid'])
-            engine_capacity = st.number_input('Engine Capacity (cc)', min_value=0, max_value=100000, value=None, placeholder='e.g. 1500')
-            fuel_type = st.selectbox('Fuel Type', ['Any','Petrol', 'Diesel', 'Electric', 'CNG', 'Hybrid'])
-            city = st.selectbox('City', city_list) # created a dropdown for city
+            transmission = st.selectbox('Transmission (Optional)', ['Any', 'Automatic', 'Manual', 'Hybrid'])
+            engine_capacity = st.number_input('Engine Capacity (cc) (Optional)', min_value=0, max_value=100000, value=None, placeholder='e.g. 1500')
+            fuel_type = st.selectbox('Fuel Type (Optional)', ['Any','Petrol', 'Diesel', 'Electric', 'CNG', 'Hybrid'])
+            city = st.selectbox('City (Optional)', city_list) # created a dropdown for city
             # engine_type = st.text_input('Engine Type/Size', placeholder='e.g. 1.3 VVTi')
 
         submit = st.button("Estimate Price", use_container_width=True)
