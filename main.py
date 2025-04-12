@@ -10,6 +10,16 @@ import datetime
 model = joblib.load('data/model.joblib')
 df_original = pd.read_csv('data/data.csv')  # original dataset
 
+# outlier removal
+Q1 = df_original['price'].quantile(0.25)
+Q3 = df_original['price'].quantile(0.75)
+IQR = Q3 - Q1
+lb = Q1 - 1.5 * IQR
+ub = Q3 + 1.5 * IQR
+condition = (df_original['price'] >= lb) & (df_original['price'] <= ub)
+df_original = df_original[condition]
+df_original.reset_index(drop=True, inplace=True)
+
 current_year = datetime.datetime.now().year
 
 def price_convert(value):
