@@ -166,7 +166,7 @@ if __name__ == '__main__':
     city_list = ['Any'] + city_list
 
     st.set_page_config(page_title='Car Price Estimator', page_icon='🚘')
-    st.title('🚘 Car Price Estimator (Pakistan)')
+    st.title('🚘 Used Car Price Estimator (Pakistan)')
     st.info("🚀 Enter car details to get an accurate estimate of price. You can also choose hypothetical values for cars such as 4000 cc engine for Suzuki FX, and you will get an estimate!")
 
     with st.container(border=False):
