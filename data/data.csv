@@ -1,4 +1,121 @@
 ad_scraped_on,ad_id,make,model,year,mileage,fuel_type,engine_capacity,transmission,city,price
+2026-08-23,11896918,Honda,Vezel Hybrid RS Honda Sensing,2019,74000,Hybrid,1500,Automatic,Islamabad,7400000.0
+2026-08-23,11818592,Deepal,S05 REEV Premium,2026,5,REEV,1500,Automatic,Hyderabad,9999000.0
+2026-08-23,11822387,Jaecoo,J7 Premium,2026,10,PHEV,1500,Automatic,Hyderabad,10200000.0
+2026-08-23,11822375,Omoda,E5 Lux,2026,10,Electric,610,Automatic,Hyderabad,8990000.0
+2026-08-23,11822492,Jaecoo,J5 Premium,2026,10,Hybrid,1500,Automatic,Hyderabad,7698999.0
+2026-08-23,11896915,Toyota,Corolla XLi VVTi,2012,298000,Petrol,1300,Manual,Jhelum,2675000.0
+2026-08-23,11818757,Changan,M9 Sherpa Power 1.2L,2026,5,Petrol,1200,Manual,Hyderabad,2399000.0
+2026-08-23,11818645,Changan,Karvaan Comfort,2026,5,Petrol,1200,Manual,Hyderabad,2949000.0
+2026-08-23,11818605,Changan,Oshan X7 Comfort,2026,5,Petrol,1500,Automatic,Hyderabad,7948999.0
+2026-08-23,11818586,Changan,Alsvin 1.5L DCT Lumiere,2026,5,Petrol,1500,Automatic,Hyderabad,4899000.0
+2026-08-23,11896924,KIA,Spectra 1.5,2002,34054,Petrol,1500,Automatic,Sargodha,990000.0
+2026-08-23,11894199,Daihatsu,Mira L,2015,120000,Petrol,660,Automatic,Karachi,2200000.0
+2026-08-23,11773818,Mitsubishi,Pajero Mini XR,1996,138000,Petrol,660,Automatic,Islamabad,1300000.0
+2026-08-23,11896922,Toyota,Corolla Altis Grande CVT-i 1.8,2019,52000,Petrol,1800,Automatic,Karachi,5710000.0
+2026-08-23,11448356,Suzuki,Alto VXR,2019,50000,Petrol,660,Manual,Karachi,2350000.0
+2026-08-23,11775260,Suzuki,Alto VXR,2011,198000,Petrol,1000,Manual,Kharian,1550000.0
+2026-08-23,11896916,Honda,City i-DSI,2008,182000,Petrol,1300,Manual,Lahore,2075000.0
+2026-08-23,11772687,Toyota,Corolla,1996,120000,Petrol,1500,Automatic,Peshawar,1600000.0
+2026-08-23,11772979,Prince,Pearl MT,2020,50000,Petrol,800,Manual,Lahore,950000.0
+2026-08-23,11771963,Suzuki,Alto VXR,2009,209784,Petrol,1000,Manual,Karachi,1030000.0
+2026-08-23,11896913,Suzuki,Swift GLX CVT,2025,1500,Petrol,1200,Automatic,Hyderabad,4800000.0
+2026-08-23,11896912,Toyota,Corolla 9th (E120) Generation GLi 1.3,2008,19999,Petrol,1300,Manual,Abbottabad,195000.0
+2026-08-23,11896914,Toyota,Corolla GLi Limited Edition 1.3 VVTi,2014,150000,Petrol,1300,Manual,Jhelum,3450000.0
+2026-08-23,11896911,Honda,City 5th (GM2) Generation Aspire Prosmatec 1.5 i-VTEC,2014,85000,Petrol,1500,Automatic,Jhelum,3250000.0
+2026-08-23,11896910,Honda,City 5th (GM2) Generation Aspire Prosmatec 1.3 i-VTEC,2013,110000,Petrol,1300,Automatic,Jhelum,3450000.0
+2026-08-23,11464287,Toyota,Fortuner 2.7 VVTi,2021,20000,Petrol,2700,Automatic,Karachi,12500000.0
+2026-08-23,11501881,Toyota,Prado TX 4.0,2012,120000,Petrol,4000,Automatic,Karachi,15500000.0
+2026-08-23,11766722,Haval,H6 2.0T AWD,2022,21000,Petrol,2000,Automatic,Karachi,7800000.0
+2026-08-23,11896907,Toyota,Vitz F Limited 1.0,2012,159000,Petrol,1000,Automatic,Islamabad,3450000.0
+2026-08-23,11896890,Suzuki,Cultus VXL,2018,82000,Petrol,1000,Manual,Faisalabad,2690000.0
+2026-08-23,11710332,Toyota,Corolla Altis Grande CVT-i 1.8,2015,180000,Petrol,1800,Automatic,Rawalpindi,4349000.0
+2026-08-23,11896909,Toyota,Corolla GLi Automatic 1.6 VVTi,2014,130000,Petrol,1600,Automatic,Mandi bahauddin,3650000.0
+2026-08-23,11896905,Toyota,Prado TX Limited 2.7,2021,52000,Petrol,2700,Automatic,Islamabad,30000000.0
+2026-08-23,11403690,Suzuki,Wagon R VXL,2021,79000,Petrol,1000,Manual,Lala musa,2760000.0
+2026-08-23,11726717,Suzuki,Wagon R VXR,2018,102000,Petrol,1000,Manual,Gujranwala,2350000.0
+2026-08-23,11887683,Honda,City 5th (GM2) Generation 1.3 i-VTEC Prosmatec,2017,50500,Petrol,1300,Automatic,Rawalpindi,4200000.0
+2026-08-23,11885056,MG,ZS 1.5L,2021,108300,Petrol,1490,Automatic,Rawalpindi,5300000.0
+2026-08-23,11724223,Suzuki,APV,2006,261214,Petrol,1500,Manual,Multan,1450000.0
+2026-08-23,11896903,Jaecoo,J5 Premium,2026,226,Hybrid,1500,Automatic,Karachi,8000000.0
+2026-08-23,11896897,Toyota,Corolla Altis 1.6 X CVT-i,2023,22000,Petrol,1600,Automatic,Sialkot,5790000.0
+2026-08-23,11844785,Honda,Civic Rebirth (FB) VTi Prosmatec 1.8 i-VTEC,2010,155000,Petrol,1800,Automatic,Lahore,2480000.0
+2026-08-23,11896899,Honda,Civic 5th (EG) Generation EX,1995,10000,Petrol,1500,Automatic,Lahore,1750000.0
+2026-08-23,11655505,Toyota,Corolla Altis Grande CVT-i 1.8,2015,143000,Petrol,1800,Automatic,Lahore,4300000.0
+2026-08-23,11896894,Toyota,Yaris Sedan GLI CVT 1.3,2020,73000,Petrol,1300,Automatic,Karachi,3550000.0
+2026-08-23,11896892,Toyota,Corolla GLi Automatic 1.6 VVTi,2013,200000,Petrol,1600,Automatic,Abbottabad,3700000.0
+2026-08-23,11896891,Suzuki,Khyber GA,1997,120000,Petrol,1000,Manual,Lahore,520000.0
+2026-08-23,11896889,Audi,A6 4th (C7) Generation 2.0 TFSI,2018,118000,Petrol,2000,Automatic,Islamabad,12000000.0
+2026-08-23,11896884,Suzuki,Wagon R AGS,2021,71000,Petrol,1000,Automatic,Jhelum,3190000.0
+2026-08-23,11896883,Suzuki,Wagon R VXL,2019,81000,Petrol,1000,Manual,Jhelum,2575000.0
+2026-08-23,11896880,Honda,Civic Oriel 1.8 i-VTEC CVT,2018,122000,Petrol,1800,Automatic,Jhelum,5650000.0
+2026-08-23,11896878,Toyota,Corolla 9th (E120) Generation 2.0D Special Edition,2008,95000,Diesel,2000,Manual,Jhelum,3100000.0
+2026-08-23,11896876,Toyota,Corolla Altis Automatic 1.6,2015,155000,Petrol,1600,Automatic,Jhelum,4250000.0
+2026-08-23,11896875,Toyota,Corolla X 1.3,2005,141000,Petrol,1300,Automatic,Karachi,3500000.0
+2026-08-23,11884855,Daihatsu,Taft G,2023,27000,Petrol,660,Automatic,Rawalpindi,4650000.0
+2026-08-23,11896874,Toyota,Corolla 8th (E110) Generation 2.0D Limited,2002,250000,Diesel,2000,Manual,Jhelum,1950000.0
+2026-08-23,11896872,Toyota,Fortuner Legender,2022,97000,Diesel,2800,Automatic,Islamabad,16500000.0
+2026-08-23,11896877,Toyota,Corolla Altis Automatic 1.6,2019,136000,Petrol,1600,Automatic,Lahore,4700000.0
+2026-08-23,11896887,Jaecoo,J5 Premium,2026,8500,Hybrid,1500,Automatic,Islamabad,7950000.0
+2026-08-23,11549951,Jeep,Wrangler,1970,54848,Diesel,2400,Manual,Karachi,2600000.0
+2026-08-23,11638469,Daihatsu,Rocky G,2020,82000,Petrol,1000,Automatic,Lahore,5400000.0
+2026-08-23,11855443,Honda,Civic Rebirth (FB) VTi Oriel Prosmatec 1.8 i-VTEC,2013,84000,Petrol,1800,Automatic,Karachi,3475000.0
+2026-08-23,11546439,Jeep,Gladiator,1961,848484,Petrol,2000,Manual,Karachi,2500000.0
+2026-08-23,11896886,Suzuki,Cultus VXLi,2011,105000,Petrol,1000,Manual,Rawalpindi,1550000.0
+2026-08-23,11896885,Hyundai,Tucson AWD A/T Ultimate,2024,18000,Petrol,2000,Automatic,Lahore,800000.0
+2026-08-23,11859389,Changan,Alsvin 1.5L DCT Lumiere,2021,45123,Petrol,1500,Automatic,Karachi,3350000.0
+2026-08-23,11720305,Toyota,Corolla 9th (E120) Generation XLi,2007,250666,Petrol,1300,Manual,Sargodha,2150000.0
+2026-08-23,11896873,Honda,Civic Rebirth (FB) VTi Prosmatec 1.8 i-VTEC,2014,110000,Petrol,1800,Automatic,Gujranwala,3750000.0
+2026-08-23,11896870,Suzuki,Swift DLX 1.3,2015,111000,Petrol,1300,Manual,Karachi,2300000.0
+2026-08-23,11861333,Toyota,Vitz F 1.0,2018,145000,Petrol,996,Automatic,Okara,3950000.0
+2026-08-23,11896869,Toyota,Prius S Touring Selection 1.8,2011,150000,Hybrid,1800,Automatic,Jhelum,3950000.0
+2026-08-23,11896866,Toyota,Fortuner 2.8 Sigma 4,2022,65000,Diesel,2800,Automatic,Jhelum,15900000.0
+2026-08-23,11896865,JAC,T9 Hunter,2025,35000,Diesel,2000,Automatic,Rawalpindi,9800000.0
+2026-08-23,11896863,Toyota,Corolla Altis Grande CVT-i 1.8,2020,85000,Petrol,1800,Automatic,Jhelum,6175000.0
+2026-08-23,11896857,Toyota,Hilux Revo GR-S,2023,32000,Diesel,2800,Automatic,Karachi,14300000.0
+2026-08-23,11880126,Toyota,Raize XS,2020,64500,Petrol,1000,Automatic,Karachi,4590000.0
+2026-08-23,11896852,Honda,Vezel Hybrid Z Style Edition,2015,86000,Hybrid,1500,Automatic,Karachi,3975000.0
+2026-08-23,11797860,Honda,City 6th (GM4) Generation 1.2L M/T,2023,59000,Petrol,1200,Manual,Islamabad,4099000.0
+2026-08-23,11896862,KIA,Sorento 3.5 FWD,2024,9400,Petrol,3500,Automatic,Gujranwala,8390000.0
+2026-08-23,11896867,Toyota,Corolla GLi 1.3 VVTi,2009,600000,Petrol,1300,Manual,Hyderabad,2500000.0
+2026-08-23,11896859,Suzuki,Mehran VXR (CNG),2011,65000,Petrol,800,Manual,Karachi,690000.0
+2026-08-23,11885354,Honda,Civic Reborn (FD) VTi Oriel Prosmatec 1.8 i-VTEC,2011,100000,Petrol,1800,Automatic,Lahore,3185000.0
+2026-08-23,11896856,Toyota,Passo X G Package,2016,90000,Petrol,1000,Automatic,Islamabad,3220000.0
+2026-08-23,11896855,Honda,Civic Oriel 1.8 i-VTEC CVT,2020,85000,Petrol,1800,Automatic,Lahore,6050000.0
+2026-08-23,11896854,Hyundai,Santro Exec,2004,250000,Petrol,1000,Manual,Lahore,1090000.0
+2026-08-23,11896851,Suzuki,Alto,2024,19913,Hybrid,660,Automatic,Islamabad,4150000.0
+2026-08-23,11896850,Changan,Oshan X7 FutureSense 7 Seat,2025,19500,Petrol,1500,Automatic,Renala khurd,8375000.0
+2026-08-23,11896847,Honda,Civic Rebirth (FB) VTi Prosmatec 1.8 i-VTEC,2013,100000,Petrol,1800,Automatic,Karachi,2890000.0
+2026-08-23,11896846,Suzuki,Jimny Turbo,2020,75000,Petrol,658,Automatic,Lahore,5500000.0
+2026-08-23,11896844,Suzuki,Cultus VXL,2019,115000,Petrol,1000,Manual,Lahore,2750000.0
+2026-08-23,11896796,Toyota,Corolla GLi 1.3 VVTi,2009,225000,Petrol,1300,Manual,Faisalabad,2500000.0
+2026-08-23,11896842,Honda,Civic Rebirth (FB) VTi Prosmatec 1.8 i-VTEC,2013,100000,Petrol,1800,Automatic,Karachi,2890000.0
+2026-08-23,11896838,Changan,Alsvin 1.5L DCT Lumiere,2021,68000,Petrol,1500,Automatic,Gujranwala,3550000.0
+2026-08-23,11896837,Daihatsu,Mira L,2012,162000,Petrol,660,Automatic,Karachi,2000000.0
+2026-08-23,11850065,Toyota,Corolla Altis Automatic 1.6,2020,90000,Petrol,1600,Automatic,Rawalpindi,4900000.0
+2026-08-23,11727808,Honda,Civic Oriel 1.8 i-VTEC CVT,2019,48000,Petrol,1800,Automatic,Karachi,5200000.0
+2026-08-23,11817666,Honda,Civic Reborn (FD) VTi Oriel Prosmatec 1.8 i-VTEC,2013,139000,Petrol,1800,Automatic,Lahore,3850000.0
+2026-08-23,11896820,Honda,City 5th (GM2) Generation Aspire Prosmatec 1.5 i-VTEC,2020,93000,Petrol,1500,Automatic,Lahore,4179999.0
+2026-08-23,11896780,Toyota,Corolla Altis X Automatic 1.6,2022,41000,Petrol,1600,Automatic,Karachi,5750000.0
+2026-08-23,11764989,Nissan,Dayz Highway Star G,2015,74000,Petrol,660,Automatic,Lahore,2650000.0
+2026-08-23,11896800,Honda,City 5th (GM2) Generation 1.3 i-VTEC,2017,110000,Petrol,1300,Manual,Lahore,3445000.0
+2026-08-23,11896799,Honda,Civic Turbo 1.5 VTEC CVT,2016,110000,Petrol,1500,Automatic,Faisalabad,4200000.0
+2026-08-23,11866274,Haval,H6 1.5T,2026,17455,Petrol,1500,Automatic,Islamabad,9500000.0
+2026-08-23,11896836,Honda,Civic Oriel 1.8 i-VTEC CVT,2018,66000,Petrol,1800,Automatic,Karachi,5300000.0
+2026-08-23,11863032,Toyota,Porte 130I,2007,68000,Petrol,1300,Automatic,Lahore,2500000.0
+2026-08-23,11896832,Audi,A6 4th (C7) Generation 1.8 TFSI Business Class Edition,2016,83000,Petrol,1800,Automatic,Lahore,10700000.0
+2026-08-23,11896831,Toyota,Corolla 8th (E110) Generation SE Limited,1999,899999,Petrol,1500,Automatic,Karachi,1550000.0
+2026-08-23,11896829,Toyota,Yaris Sedan,2024,25000,Petrol,1300,Automatic,Karachi,4725000.0
+2026-08-23,11864651,Honda,Civic Oriel 1.8 i-VTEC CVT,2018,106200,Petrol,1800,Automatic,Islamabad,5290000.0
+2026-08-23,11896826,Suzuki,Swift DLX Automatic 1.3 Navigation,2018,69000,Petrol,1300,Automatic,Sadiqabad,2840000.0
+2026-08-23,11896825,Toyota,Camry XV50 Hybrid,2013,200000,Hybrid,2500,Automatic,Lahore,7550000.0
+2026-08-23,11896824,Suzuki,Alto VXL AGS,2022,64000,Petrol,660,Automatic,Faisalabad,2860000.0
+2026-08-23,11896818,KIA,Sportage AWD,2019,106000,Petrol,2000,Automatic,Karachi,5425000.0
+2026-08-23,11896821,KIA,Sportage FWD,2022,65000,Petrol,2000,Automatic,Lahore,6350000.0
+2026-08-23,11896817,Suzuki,Alto VXR,2023,47000,Petrol,1000,Manual,Lahore,2730000.0
+2026-08-23,11896816,Toyota,Corolla Altis Automatic 1.6,2015,152000,Petrol,1600,Automatic,Gujranwala,3890000.0
+2026-08-23,11896809,Range,Rover Vogue 4.4 V8,2005,170000,Petrol,4400,Automatic,Rawalpindi,5500000.0
+2026-08-23,11896813,Honda,Civic Reborn (FD) VTi Oriel Prosmatec 1.8 i-VTEC,2007,160000,Petrol,1800,Automatic,Abbottabad,2120000.0
 2026-08-22,11887719,Honda,City 5th (GM2) Generation 1.3 i-VTEC Prosmatec,2018,120000,Petrol,1300,Automatic,Lahore,3825000.0
 2026-08-22,11891923,Honda,Civic 11th (FE) Generation RS,2025,9700,Petrol,1500,Automatic,Lahore,9250000.0
 2026-08-22,11891912,Toyota,Corolla XLi VVTi,2014,88000,Petrol,1300,Manual,Karachi,2580000.0
